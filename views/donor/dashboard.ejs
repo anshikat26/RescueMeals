@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - RescueMeals</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+<div class="dashboard">
+    <div class="dashboard-top">
+        <div>
+            <h1 class="dashboard-title">Donor Dashboard</h1>
+            <p class="dashboard-subtitle">Manage your food donations and track their impact</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/donate" class="dashboard-btn add-btn">
+                <i class="fas fa-plus"></i> Add Donation
+            </a>
+            <a href="/logout" class="dashboard-btn logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-container">
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <h3>Total Donations</h3>
+            <h1><%= totalDonations %></h1>
+            <p>All time donations</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Available</h3>
+            <h1><%= availableDonations %></h1>
+            <p>Ready for pickup</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <h3>Delivered</h3>
+            <h1><%= deliveredDonations %></h1>
+            <p>Successfully delivered</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h3>Pending</h3>
+            <h1><%= totalDonations - availableDonations - deliveredDonations %></h1>
+            <p>Awaiting pickup</p>
+        </div>
+    </div>
+
+    <!-- Donation Table -->
+    <div class="table-box">
+        <div class="table-header">
+            <h3>Donation Records</h3>
+            <div class="table-search">
+                <input type="text" placeholder="Search donations..." id="searchInput">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table" id="donationTable">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Food Item</th>
+                        <th>Quantity</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Delivery Partner</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% donations.forEach(donation => { %>
+                        <tr>
+                            <td>
+                                <img src="/uploads/<%= donation.image %>" alt="<%= donation.foodName %>">
+                            </td>
+                            <td>
+                                <strong><%= donation.foodName %></strong>
+                            </td>
+                            <td><%= donation.quantity %></td>
+                            <td><i class="fas fa-map-marker-alt"></i> <%= donation.location %></td>
+                            <td>
+                                <% if(donation.status === "Available") { %>
+                                    <span class="badge bg-success">Available</span>
+                                <% } else if(donation.status === "Claimed") { %>
+                                    <span class="badge bg-warning text-dark">Claimed</span>
+                                <% } else if(donation.status === "Out for Delivery") { %>
+                                    <span class="badge bg-primary">Out for Delivery</span>
+                                <% } else { %>
+                                    <span class="badge bg-dark">Delivered</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if(donation.deliveryPartner) { %>
+                                    <i class="fas fa-user"></i> <%= donation.deliveryPartner %>
+                                <% } else { %>
+                                    <span class="text-muted">Not Assigned</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="#" class="action-btn btn-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <% if(donation.status === "Available") { %>
+                                        <a href="#" class="action-btn btn-danger">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('donationTable');
+    
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        const rows = table.getElementsByTagName('tr');
+        
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+            
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const textValue = cells[j].textContent || cells[j].innerText;
+                    if (textValue.toLowerCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            
+            rows[i].style.display = found ? '' : 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

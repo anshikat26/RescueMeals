@@ -1,0 +1,82 @@
+<!-- Footer - RescueMeals -->
+<link rel="stylesheet" href="/css/footer.css">
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-top">
+            <div class="footer-about">
+                <h3><%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %></h3>
+                <p>
+                    <%= content.footer?.about || 'Connecting food donors with NGOs and volunteers to reduce food wastage and support communities in need. Together, we can make a difference.' %>
+                </p>
+                <div class="footer-social">
+                    <% const socialLinks = content.footer?.social || [
+                        {icon: 'fa-facebook-f', url: '#'},
+                        {icon: 'fa-twitter', url: '#'},
+                        {icon: 'fa-instagram', url: '#'},
+                        {icon: 'fa-linkedin-in', url: '#'}
+                    ]; %>
+                    <% socialLinks.forEach(link => { %>
+                    <a href="<%= link.url %>" aria-label="Social"><i class="fab <%= link.icon %>"></i></a>
+                    <% }); %>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h4><%= content.footer?.quickLinksTitle || 'Quick Links' %></h4>
+                <ul>
+                    <% const quickLinks = content.footer?.quickLinks || [
+                        {text: 'Home', url: '#home'},
+                        {text: 'About Us', url: '#about'},
+                        {text: 'Features', url: '#features'},
+                        {text: 'How It Works', url: '#how-it-works'},
+                        {text: 'Contact', url: '#contact'}
+                    ]; %>
+                    <% quickLinks.forEach(link => { %>
+                    <li><a href="<%= link.url %>"><%= link.text %></a></li>
+                    <% }); %>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4><%= content.footer?.resourcesTitle || 'Resources' %></h4>
+                <ul>
+                    <% const resources = content.footer?.resources || [
+                        {text: 'FAQ', url: '#'},
+                        {text: 'Blog', url: '#'},
+                        {text: 'Privacy Policy', url: '#'},
+                        {text: 'Terms of Service', url: '#'},
+                        {text: 'Support', url: '#'}
+                    ]; %>
+                    <% resources.forEach(resource => { %>
+                    <li><a href="<%= resource.url %>"><%= resource.text %></a></li>
+                    <% }); %>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4><%= content.footer?.contactTitle || 'Contact Us' %></h4>
+                <div class="footer-contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span><%= content.footer?.address || '123 Food Street, City, Country' %></span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span><%= content.footer?.phone || '+1 234 567 890' %></span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span><%= content.footer?.email || 'info@rescuemeals.com' %></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>
+                &copy; <%= new Date().getFullYear() %> <%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %>. All rights reserved. | 
+                <a href="#"><%= content.footer?.privacyPolicy || 'Privacy Policy' %></a> | 
+                <a href="#"><%= content.footer?.termsOfService || 'Terms of Service' %></a>
+            </p>
+        </div>
+    </div>
+</footer>

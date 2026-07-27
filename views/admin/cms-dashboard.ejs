@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'CMS' %> - RescueMeals</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/cms.css">
+</head>
+<body>
+    <div class="cms-dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="cms-sidebar">
+            <div class="cms-sidebar-header">
+                <div class="cms-logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>RescueMeals</span>
+                </div>
+                <div class="cms-subtitle">Content Management</div>
+            </div>
+            
+            <nav class="cms-nav">
+                <div class="cms-nav-section">
+                    <div class="cms-nav-section-title">Pages</div>
+                    <a href="/admin/cms/home" class="cms-nav-item <%= activePage === 'home' ? 'active' : '' %>">
+                        <i class="fas fa-home"></i>
+                        <span>Home Page</span>
+                    </a>
+                    <a href="/admin/cms/about" class="cms-nav-item <%= activePage === 'about' ? 'active' : '' %>">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Page</span>
+                    </a>
+                    <a href="/admin/cms/contact" class="cms-nav-item <%= activePage === 'contact' ? 'active' : '' %>">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact Page</span>
+                    </a>
+                </div>
+                
+                <div class="cms-nav-section">
+                    <div class="cms-nav-section-title">Content</div>
+                    <a href="/admin/cms/footer" class="cms-nav-item <%= activePage === 'footer' ? 'active' : '' %>">
+                        <i class="fas fa-columns"></i>
+                        <span>Footer</span>
+                    </a>
+                    <a href="/admin/cms/gallery" class="cms-nav-item <%= activePage === 'gallery' ? 'active' : '' %>">
+                        <i class="fas fa-images"></i>
+                        <span>Gallery</span>
+                    </a>
+                    <a href="/admin/cms/testimonials" class="cms-nav-item <%= activePage === 'testimonials' ? 'active' : '' %>">
+                        <i class="fas fa-quote-left"></i>
+                        <span>Testimonials</span>
+                    </a>
+                    <a href="/admin/cms/faq" class="cms-nav-item <%= activePage === 'faq' ? 'active' : '' %>">
+                        <i class="fas fa-question-circle"></i>
+                        <span>FAQ</span>
+                    </a>
+                </div>
+                
+                <div class="cms-nav-section">
+                    <div class="cms-nav-section-title">Legal</div>
+                    <a href="/admin/cms/privacy" class="cms-nav-item <%= activePage === 'privacy' ? 'active' : '' %>">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Privacy Policy</span>
+                    </a>
+                    <a href="/admin/cms/terms" class="cms-nav-item <%= activePage === 'terms' ? 'active' : '' %>">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Terms & Conditions</span>
+                    </a>
+                </div>
+                
+                <div class="cms-nav-section">
+                    <div class="cms-nav-section-title">Settings</div>
+                    <a href="/admin/cms/settings" class="cms-nav-item <%= activePage === 'settings' ? 'active' : '' %>">
+                        <i class="fas fa-cog"></i>
+                        <span>Website Settings</span>
+                    </a>
+                    <a href="/admin/cms/messages" class="cms-nav-item <%= activePage === 'messages' ? 'active' : '' %>">
+                        <i class="fas fa-envelope-open"></i>
+                        <span>Contact Messages</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="cms-sidebar-footer">
+                <a href="/" class="cms-nav-item" target="_blank">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>View Website</span>
+                </a>
+                <a href="/logout" class="cms-nav-item cms-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="cms-main">
+            <!-- Top Bar -->
+            <header class="cms-topbar">
+                <div class="cms-topbar-left">
+                    <button class="cms-menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="cms-page-title"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'CMS Dashboard' %></h1>
+                </div>
+                <div class="cms-topbar-right">
+                    <div class="cms-user-info">
+                        <div class="cms-user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="cms-user-details">
+                            <div class="cms-user-name"><%= user ? user.name : 'Admin' %></div>
+                            <div class="cms-user-role"><%= user ? user.role : 'Admin' %></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content Area (page content is injected between this partial and cms-dashboard-end) -->
+            <div class="cms-content">

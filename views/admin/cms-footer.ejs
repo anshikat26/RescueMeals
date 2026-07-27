@@ -1,0 +1,75 @@
+<%- include('cms-dashboard', { pageTitle: 'Footer CMS', activePage: 'footer', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Footer Content</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveFooterContent()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="footerForm">
+        <div class="cms-form-group">
+            <label class="cms-form-label">Footer Description</label>
+            <textarea class="cms-form-textarea" id="footerDescription" placeholder="Enter footer description"></textarea>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Copyright Text</label>
+            <input type="text" class="cms-form-input" id="footerCopyright" placeholder="Enter copyright text">
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Quick Links (comma separated)</label>
+            <input type="text" class="cms-form-input" id="footerLinks" placeholder="Home, About, Contact, Donate">
+        </div>
+    </form>
+</div>
+
+<script>
+    async function loadFooterContent() {
+        try {
+            const response = await fetch('/api/cms/content/footer/main');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('footerDescription').value = data.content.description || '';
+                document.getElementById('footerCopyright').value = data.content.copyright || '';
+                document.getElementById('footerLinks').value = data.content.links || '';
+            }
+        } catch (error) {
+            console.error('Error loading footer content:', error);
+        }
+    }
+
+    async function saveFooterContent() {
+        const content = {
+            description: document.getElementById('footerDescription').value,
+            copyright: document.getElementById('footerCopyright').value,
+            links: document.getElementById('footerLinks').value
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/footer/main', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('Footer content saved successfully!');
+            } else {
+                showToast('Error saving footer content', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving footer content:', error);
+            showToast('Error saving footer content', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFooterContent);
+</script>
+
+<%- include('cms-dashboard-end') %>

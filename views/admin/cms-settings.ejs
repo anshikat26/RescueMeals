@@ -1,0 +1,133 @@
+<%- include('cms-dashboard', { pageTitle: 'Website Settings CMS', activePage: 'settings', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Website Settings</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveSettings()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="settingsForm">
+        <div class="cms-form-row">
+            <div class="cms-form-group">
+                <label class="cms-form-label">Website Name</label>
+                <input type="text" class="cms-form-input" id="websiteName" placeholder="RescueMeals">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">Logo URL</label>
+                <input type="text" class="cms-form-input" id="logoUrl" placeholder="Enter logo URL or upload below">
+                <input type="file" accept="image/*" id="logoFile" class="cms-form-input" style="margin-top:8px;" onchange="uploadLogo(this)">
+                <img id="logoPreview" class="cms-image-preview" alt="Logo preview">
+            </div>
+        </div>
+
+        <div class="cms-form-row">
+            <div class="cms-form-group">
+                <label class="cms-form-label">Primary Color</label>
+                <input type="color" class="cms-form-input" id="primaryColor" value="#16A34A">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">Secondary Color</label>
+                <input type="color" class="cms-form-input" id="secondaryColor" value="#22C55E">
+            </div>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">SEO Title</label>
+            <input type="text" class="cms-form-input" id="seoTitle" placeholder="Enter SEO title">
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">SEO Description</label>
+            <textarea class="cms-form-textarea" id="seoDescription" placeholder="Enter SEO description"></textarea>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Meta Keywords (comma separated)</label>
+            <input type="text" class="cms-form-input" id="metaKeywords" placeholder="food donation, food waste, NGO, charity">
+        </div>
+    </form>
+</div>
+
+<script>
+    function showLogoPreview(url) {
+        const preview = document.getElementById('logoPreview');
+        if (url) {
+            preview.src = url;
+            preview.classList.add('show');
+        } else {
+            preview.classList.remove('show');
+        }
+    }
+
+    async function uploadLogo(input) {
+        const file = input.files[0];
+        if (!file) return;
+        try {
+            showToast('Uploading logo...');
+            const url = await uploadImage(file);
+            document.getElementById('logoUrl').value = url;
+            showLogoPreview(url);
+            showToast('Logo uploaded! Click Save Changes to apply.');
+        } catch (error) {
+            console.error('Error uploading logo:', error);
+            showToast(error.message || 'Error uploading logo', 'error');
+        }
+    }
+
+    async function loadSettings() {
+        try {
+            const response = await fetch('/api/cms/settings');
+            const settings = await response.json();
+
+            if (settings) {
+                document.getElementById('websiteName').value = settings.website_name || 'RescueMeals';
+                document.getElementById('logoUrl').value = settings.logo_url || '';
+                showLogoPreview(settings.logo_url || '');
+                document.getElementById('primaryColor').value = settings.primary_color || '#16A34A';
+                document.getElementById('secondaryColor').value = settings.secondary_color || '#22C55E';
+                document.getElementById('seoTitle').value = settings.seo_title || '';
+                document.getElementById('seoDescription').value = settings.seo_description || '';
+                document.getElementById('metaKeywords').value = settings.meta_keywords ? settings.meta_keywords.join(', ') : '';
+            }
+        } catch (error) {
+            console.error('Error loading settings:', error);
+        }
+    }
+
+    async function saveSettings() {
+        const settings = {
+            website_name: document.getElementById('websiteName').value,
+            logo_url: document.getElementById('logoUrl').value,
+            primary_color: document.getElementById('primaryColor').value,
+            secondary_color: document.getElementById('secondaryColor').value,
+            seo_title: document.getElementById('seoTitle').value,
+            seo_description: document.getElementById('seoDescription').value,
+            meta_keywords: document.getElementById('metaKeywords').value.split(',').map(k => k.trim()).filter(Boolean)
+        };
+
+        try {
+            const response = await fetch('/api/cms/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            });
+
+            if (response.ok) {
+                showToast('Settings saved successfully!');
+            } else {
+                showToast('Error saving settings', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            showToast('Error saving settings', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSettings);
+</script>
+
+<%- include('cms-dashboard-end') %>

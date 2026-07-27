@@ -1,0 +1,61 @@
+<%- include('cms-dashboard', { pageTitle: 'Privacy Policy CMS', activePage: 'privacy', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Privacy Policy</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="savePrivacyPolicy()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="privacyForm">
+        <div class="cms-form-group">
+            <label class="cms-form-label">Privacy Policy Content</label>
+            <textarea class="cms-form-textarea" id="privacyContent" style="min-height: 400px;" placeholder="Enter privacy policy content"></textarea>
+        </div>
+    </form>
+</div>
+
+<script>
+    async function loadPrivacyPolicy() {
+        try {
+            const response = await fetch('/api/cms/content/privacy/main');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('privacyContent').value = data.content.text || '';
+            }
+        } catch (error) {
+            console.error('Error loading privacy policy:', error);
+        }
+    }
+
+    async function savePrivacyPolicy() {
+        const content = {
+            text: document.getElementById('privacyContent').value
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/privacy/main', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('Privacy policy saved successfully!');
+            } else {
+                showToast('Error saving privacy policy', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving privacy policy:', error);
+            showToast('Error saving privacy policy', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPrivacyPolicy);
+</script>
+
+<%- include('cms-dashboard-end') %>

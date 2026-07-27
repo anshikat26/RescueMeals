@@ -1,0 +1,311 @@
+<%- include('cms-dashboard', { pageTitle: 'Home Page CMS', activePage: 'home', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Hero Section</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveHeroSection()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="heroForm">
+        <div class="cms-form-row">
+            <div class="cms-form-group">
+                <label class="cms-form-label">Hero Title</label>
+                <input type="text" class="cms-form-input" id="heroTitle" placeholder="Enter hero title">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">Hero Subtitle</label>
+                <input type="text" class="cms-form-input" id="heroSubtitle" placeholder="Enter hero subtitle">
+            </div>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Hero Description</label>
+            <textarea class="cms-form-textarea" id="heroDescription" placeholder="Enter hero description"></textarea>
+        </div>
+
+        <div class="cms-form-row">
+            <div class="cms-form-group">
+                <label class="cms-form-label">Hero Image URL</label>
+                <input type="text" class="cms-form-input" id="heroImage" placeholder="Enter hero image URL or upload below">
+                <input type="file" accept="image/*" id="heroImageFile" class="cms-form-input" style="margin-top:8px;" onchange="uploadHeroImage(this)">
+                <img id="heroImagePreview" class="cms-image-preview" alt="Hero preview">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">CTA Button Text</label>
+                <input type="text" class="cms-form-input" id="ctaText" placeholder="Enter CTA button text">
+            </div>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">CTA Button Link</label>
+            <input type="text" class="cms-form-input" id="ctaLink" placeholder="Enter CTA button link">
+        </div>
+    </form>
+</div>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Statistics</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveStatistics()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="statsForm">
+        <div class="cms-form-row">
+            <div class="cms-form-group">
+                <label class="cms-form-label">Donations Count</label>
+                <input type="number" class="cms-form-input" id="statDonations" placeholder="Enter donations count">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">NGOs Count</label>
+                <input type="number" class="cms-form-input" id="statNGOs" placeholder="Enter NGOs count">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">Volunteers Count</label>
+                <input type="number" class="cms-form-input" id="statVolunteers" placeholder="Enter volunteers count">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">People Helped Count</label>
+                <input type="number" class="cms-form-input" id="statPeople" placeholder="Enter people helped count">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Features</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveFeatures()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="featuresForm">
+        <div id="featuresContainer">
+            <!-- Features will be dynamically added here -->
+        </div>
+        <button type="button" class="cms-btn cms-btn-secondary cms-btn-sm" onclick="addFeature()">
+            <i class="fas fa-plus"></i> Add Feature
+        </button>
+    </form>
+</div>
+
+<script>
+    // Hero image upload
+    function showHeroPreview(url) {
+        const preview = document.getElementById('heroImagePreview');
+        if (url) {
+            preview.src = url;
+            preview.classList.add('show');
+        } else {
+            preview.classList.remove('show');
+        }
+    }
+
+    async function uploadHeroImage(input) {
+        const file = input.files[0];
+        if (!file) return;
+        try {
+            showToast('Uploading image...');
+            const url = await uploadImage(file);
+            document.getElementById('heroImage').value = url;
+            showHeroPreview(url);
+            showToast('Image uploaded! Click Save Changes to apply.');
+        } catch (error) {
+            console.error('Error uploading hero image:', error);
+            showToast(error.message || 'Error uploading image', 'error');
+        }
+    }
+
+    // Load hero section data
+    async function loadHeroSection() {
+        try {
+            const response = await fetch('/api/cms/content/home/hero');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('heroTitle').value = data.content.title || '';
+                document.getElementById('heroSubtitle').value = data.content.subtitle || '';
+                document.getElementById('heroDescription').value = data.content.description || '';
+                document.getElementById('heroImage').value = data.content.image || '';
+                showHeroPreview(data.content.image || '');
+                document.getElementById('ctaText').value = data.content.ctaText || '';
+                document.getElementById('ctaLink').value = data.content.ctaLink || '';
+            }
+        } catch (error) {
+            console.error('Error loading hero section:', error);
+        }
+    }
+
+    // Save hero section
+    async function saveHeroSection() {
+        const content = {
+            title: document.getElementById('heroTitle').value,
+            subtitle: document.getElementById('heroSubtitle').value,
+            description: document.getElementById('heroDescription').value,
+            image: document.getElementById('heroImage').value,
+            ctaText: document.getElementById('ctaText').value,
+            ctaLink: document.getElementById('ctaLink').value
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/home/hero', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('Hero section saved successfully!');
+            } else {
+                showToast('Error saving hero section', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving hero section:', error);
+            showToast('Error saving hero section', 'error');
+        }
+    }
+
+    // Load statistics
+    async function loadStatistics() {
+        try {
+            const response = await fetch('/api/cms/content/home/statistics');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('statDonations').value = data.content.donations || '';
+                document.getElementById('statNGOs').value = data.content.ngos || '';
+                document.getElementById('statVolunteers').value = data.content.volunteers || '';
+                document.getElementById('statPeople').value = data.content.people || '';
+            }
+        } catch (error) {
+            console.error('Error loading statistics:', error);
+        }
+    }
+
+    // Save statistics
+    async function saveStatistics() {
+        const content = {
+            donations: parseInt(document.getElementById('statDonations').value) || 0,
+            ngos: parseInt(document.getElementById('statNGOs').value) || 0,
+            volunteers: parseInt(document.getElementById('statVolunteers').value) || 0,
+            people: parseInt(document.getElementById('statPeople').value) || 0
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/home/statistics', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('Statistics saved successfully!');
+            } else {
+                showToast('Error saving statistics', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving statistics:', error);
+            showToast('Error saving statistics', 'error');
+        }
+    }
+
+    // Load features
+    async function loadFeatures() {
+        try {
+            const response = await fetch('/api/cms/content/home/features');
+            const data = await response.json();
+
+            if (data.content && data.content.features) {
+                const container = document.getElementById('featuresContainer');
+                container.innerHTML = '';
+
+                data.content.features.forEach((feature) => {
+                    addFeature(feature.title, feature.description, feature.icon);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading features:', error);
+        }
+    }
+
+    // Add feature input
+    function addFeature(title = '', description = '', icon = '') {
+        const container = document.getElementById('featuresContainer');
+        const featureDiv = document.createElement('div');
+        featureDiv.className = 'cms-form-row feature-item';
+        featureDiv.innerHTML = `
+            <div class="cms-form-group">
+                <label class="cms-form-label">Feature Title</label>
+                <input type="text" class="cms-form-input feature-title" value="${title}" placeholder="Enter feature title">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">Feature Description</label>
+                <input type="text" class="cms-form-input feature-description" value="${description}" placeholder="Enter feature description">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">Icon Class</label>
+                <input type="text" class="cms-form-input feature-icon" value="${icon}" placeholder="Enter Font Awesome icon class">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">&nbsp;</label>
+                <button type="button" class="cms-btn cms-btn-danger cms-btn-sm" onclick="removeFeature(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(featureDiv);
+    }
+
+    // Remove feature
+    function removeFeature(button) {
+        button.closest('.feature-item').remove();
+    }
+
+    // Save features
+    async function saveFeatures() {
+        const features = [];
+        document.querySelectorAll('.feature-item').forEach(item => {
+            features.push({
+                title: item.querySelector('.feature-title').value,
+                description: item.querySelector('.feature-description').value,
+                icon: item.querySelector('.feature-icon').value
+            });
+        });
+
+        try {
+            const response = await fetch('/api/cms/content/home/features', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ features })
+            });
+
+            if (response.ok) {
+                showToast('Features saved successfully!');
+            } else {
+                showToast('Error saving features', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving features:', error);
+            showToast('Error saving features', 'error');
+        }
+    }
+
+    // Load all data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadHeroSection();
+        loadStatistics();
+        loadFeatures();
+    });
+</script>
+
+<%- include('cms-dashboard-end') %>

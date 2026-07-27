@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Dashboard - RescueMeals</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+<div class="dashboard">
+    <div class="dashboard-top">
+        <div>
+            <h1 class="dashboard-title">NGO Dashboard</h1>
+            <p class="dashboard-subtitle">Browse and claim available food donations</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/logout" class="dashboard-btn logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-container">
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3>Available Donations</h3>
+            <h1><%= donations ? donations.length : 0 %></h1>
+            <p>Ready to claim</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <h3>Claimed by You</h3>
+            <h1><%= typeof claimedCount !== 'undefined' ? claimedCount : 0 %></h1>
+            <p>In progress</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-check-double"></i>
+            </div>
+            <h3>Received</h3>
+            <h1><%= typeof receivedCount !== 'undefined' ? receivedCount : 0 %></h1>
+            <p>Successfully received</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>People Helped</h3>
+            <h1><%= typeof peopleHelped !== 'undefined' ? peopleHelped : 0 %></h1>
+            <p>Total impact</p>
+        </div>
+    </div>
+
+    <!-- Available Donations Table -->
+    <div class="table-box">
+        <div class="table-header">
+            <h3>Available Donations</h3>
+            <div class="table-search">
+                <input type="text" placeholder="Search donations..." id="searchInput">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table" id="donationTable">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Food Item</th>
+                        <th>Quantity</th>
+                        <th>Location</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% donations.forEach(donation => { %>
+                        <tr>
+                            <td>
+                                <img src="/uploads/<%= donation.image %>" alt="<%= donation.foodName %>">
+                            </td>
+                            <td>
+                                <strong><%= donation.foodName %></strong>
+                            </td>
+                            <td><%= donation.quantity %></td>
+                            <td><i class="fas fa-map-marker-alt"></i> <%= donation.location %></td>
+                            <td><i class="fas fa-phone"></i> <%= donation.contact %></td>
+                            <td>
+                                <span class="badge bg-success">Available</span>
+                            </td>
+                            <td>
+                                <a href="/claim/<%= donation._id %>" class="action-btn btn-success">
+                                    <i class="fas fa-hand-holding-heart"></i> Claim
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('donationTable');
+    
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        const rows = table.getElementsByTagName('tr');
+        
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+            
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const textValue = cells[j].textContent || cells[j].innerText;
+                    if (textValue.toLowerCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            
+            rows[i].style.display = found ? '' : 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

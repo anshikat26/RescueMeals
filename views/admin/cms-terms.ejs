@@ -1,0 +1,61 @@
+<%- include('cms-dashboard', { pageTitle: 'Terms & Conditions CMS', activePage: 'terms', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Terms & Conditions</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveTerms()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="termsForm">
+        <div class="cms-form-group">
+            <label class="cms-form-label">Terms & Conditions Content</label>
+            <textarea class="cms-form-textarea" id="termsContent" style="min-height: 400px;" placeholder="Enter terms and conditions content"></textarea>
+        </div>
+    </form>
+</div>
+
+<script>
+    async function loadTerms() {
+        try {
+            const response = await fetch('/api/cms/content/terms/main');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('termsContent').value = data.content.text || '';
+            }
+        } catch (error) {
+            console.error('Error loading terms:', error);
+        }
+    }
+
+    async function saveTerms() {
+        const content = {
+            text: document.getElementById('termsContent').value
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/terms/main', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('Terms & conditions saved successfully!');
+            } else {
+                showToast('Error saving terms & conditions', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving terms:', error);
+            showToast('Error saving terms & conditions', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadTerms);
+</script>
+
+<%- include('cms-dashboard-end') %>

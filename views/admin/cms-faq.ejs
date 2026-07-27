@@ -1,0 +1,191 @@
+<%- include('cms-dashboard', { pageTitle: 'FAQ CMS', activePage: 'faq', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Frequently Asked Questions</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="openAddFaqModal()">
+                <i class="fas fa-plus"></i> Add FAQ
+            </button>
+        </div>
+    </div>
+
+    <div id="faqList">
+        <!-- FAQs loaded here -->
+    </div>
+</div>
+
+<!-- Add / Edit Modal -->
+<div class="cms-modal" id="faqModal">
+    <div class="cms-modal-content">
+        <div class="cms-modal-header">
+            <h3 id="faqModalTitle">Add FAQ</h3>
+            <button class="cms-modal-close" onclick="closeFaqModal()">&times;</button>
+        </div>
+        <div class="cms-modal-body">
+            <form id="faqForm">
+                <input type="hidden" id="faqId">
+                <div class="cms-form-group">
+                    <label class="cms-form-label">Question</label>
+                    <input type="text" class="cms-form-input" id="faqQuestion" placeholder="Enter the question" required>
+                </div>
+                <div class="cms-form-group">
+                    <label class="cms-form-label">Answer</label>
+                    <textarea class="cms-form-textarea" id="faqAnswer" placeholder="Enter the answer" required></textarea>
+                </div>
+                <div class="cms-form-row">
+                    <div class="cms-form-group">
+                        <label class="cms-form-label">Category</label>
+                        <input type="text" class="cms-form-input" id="faqCategory" placeholder="General">
+                    </div>
+                    <div class="cms-form-group">
+                        <label class="cms-form-label">Order</label>
+                        <input type="number" class="cms-form-input" id="faqOrder" value="0">
+                    </div>
+                </div>
+                <div class="cms-form-group">
+                    <label class="cms-form-label">
+                        <input type="checkbox" id="faqActive" checked> Active (visible on website)
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="cms-modal-footer">
+            <button class="cms-btn cms-btn-secondary" onclick="closeFaqModal()">Cancel</button>
+            <button class="cms-btn cms-btn-primary" onclick="saveFaq()">
+                <i class="fas fa-save"></i> Save
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function escapeHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    async function loadFaqs() {
+        const list = document.getElementById('faqList');
+        try {
+            const response = await fetch('/api/cms/faq?all=true');
+            const faqs = await response.json();
+
+            if (!faqs.length) {
+                list.innerHTML = '<div class="cms-empty-state"><i class="fas fa-question-circle"></i><h3>No FAQs yet</h3><p>Add your first FAQ to get started.</p></div>';
+                return;
+            }
+
+            list.innerHTML = faqs.map(faq => `
+                <div class="cms-list-item">
+                    <div class="cms-list-item-content">
+                        <h4>${escapeHtml(faq.question)} ${faq.is_active ? '' : '<span style="color:#9ca3af;font-size:12px;">(hidden)</span>'}</h4>
+                        <p>${escapeHtml(faq.answer)}</p>
+                        <small style="color:#6b7280;">Category: ${escapeHtml(faq.category || 'General')} &middot; Order: ${faq.order || 0}</small>
+                    </div>
+                    <div class="cms-list-item-actions">
+                        <button class="cms-btn cms-btn-secondary cms-btn-sm" onclick='editFaq(${JSON.stringify(faq)})'>
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="cms-btn cms-btn-danger cms-btn-sm" onclick="deleteFaq('${faq._id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading FAQs:', error);
+            list.innerHTML = '<div class="cms-empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load FAQs</h3></div>';
+        }
+    }
+
+    function openAddFaqModal() {
+        document.getElementById('faqModalTitle').textContent = 'Add FAQ';
+        document.getElementById('faqId').value = '';
+        document.getElementById('faqQuestion').value = '';
+        document.getElementById('faqAnswer').value = '';
+        document.getElementById('faqCategory').value = '';
+        document.getElementById('faqOrder').value = '0';
+        document.getElementById('faqActive').checked = true;
+        document.getElementById('faqModal').classList.add('show');
+    }
+
+    function editFaq(faq) {
+        document.getElementById('faqModalTitle').textContent = 'Edit FAQ';
+        document.getElementById('faqId').value = faq._id;
+        document.getElementById('faqQuestion').value = faq.question || '';
+        document.getElementById('faqAnswer').value = faq.answer || '';
+        document.getElementById('faqCategory').value = faq.category || '';
+        document.getElementById('faqOrder').value = faq.order || 0;
+        document.getElementById('faqActive').checked = faq.is_active !== false;
+        document.getElementById('faqModal').classList.add('show');
+    }
+
+    function closeFaqModal() {
+        document.getElementById('faqModal').classList.remove('show');
+    }
+
+    async function saveFaq() {
+        const id = document.getElementById('faqId').value;
+        const question = document.getElementById('faqQuestion').value.trim();
+        const answer = document.getElementById('faqAnswer').value.trim();
+
+        if (!question || !answer) {
+            showToast('Question and answer are required', 'error');
+            return;
+        }
+
+        const payload = {
+            question: question,
+            answer: answer,
+            category: document.getElementById('faqCategory').value || 'General',
+            order: parseInt(document.getElementById('faqOrder').value) || 0,
+            is_active: document.getElementById('faqActive').checked
+        };
+
+        try {
+            const url = id ? `/api/cms/faq/${id}` : '/api/cms/faq';
+            const method = id ? 'PUT' : 'POST';
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                showToast(id ? 'FAQ updated successfully!' : 'FAQ added successfully!');
+                closeFaqModal();
+                loadFaqs();
+            } else {
+                showToast('Error saving FAQ', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving FAQ:', error);
+            showToast('Error saving FAQ', 'error');
+        }
+    }
+
+    async function deleteFaq(id) {
+        if (!confirm('Are you sure you want to delete this FAQ?')) return;
+        try {
+            const response = await fetch(`/api/cms/faq/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                showToast('FAQ deleted successfully!');
+                loadFaqs();
+            } else {
+                showToast('Error deleting FAQ', 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting FAQ:', error);
+            showToast('Error deleting FAQ', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFaqs);
+</script>
+
+<%- include('cms-dashboard-end') %>

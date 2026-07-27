@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Dashboard - RescueMeals</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+<div class="dashboard">
+    <div class="dashboard-top">
+        <div>
+            <h1 class="dashboard-title">Volunteer Dashboard</h1>
+            <p class="dashboard-subtitle">Manage food deliveries and help your community</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="/logout" class="dashboard-btn logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-container">
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3>Pending Deliveries</h3>
+            <h1><%= typeof pendingCount !== 'undefined' ? pendingCount : 0 %></h1>
+            <p>Awaiting pickup</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <h3>In Transit</h3>
+            <h1><%= typeof inTransitCount !== 'undefined' ? inTransitCount : 0 %></h1>
+            <p>Out for delivery</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Completed</h3>
+            <h1><%= typeof completedCount !== 'undefined' ? completedCount : 0 %></h1>
+            <p>Successfully delivered</p>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <h3>Total Distance</h3>
+            <h1><%= typeof totalDistance !== 'undefined' ? totalDistance : 0 %>km</h1>
+            <p>Distance traveled</p>
+        </div>
+    </div>
+
+    <!-- Claimed Deliveries Table -->
+    <div class="table-box">
+        <div class="table-header">
+            <h3>Claimed Deliveries</h3>
+            <div class="table-search">
+                <input type="text" placeholder="Search deliveries..." id="searchInput">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table" id="deliveryTable">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Food Item</th>
+                        <th>Quantity</th>
+                        <th>Pickup Location</th>
+                        <th>Delivery Location</th>
+                        <th>Receiver</th>
+                        <th>Status</th>
+                        <th>Assigned Rider</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% donations.forEach(donation => { %>
+                        <tr>
+                            <td>
+                                <img src="/uploads/<%= donation.image %>" alt="<%= donation.foodName %>">
+                            </td>
+                            <td>
+                                <strong><%= donation.foodName %></strong>
+                            </td>
+                            <td><%= donation.quantity %></td>
+                            <td><i class="fas fa-map-marker-alt"></i> <%= donation.location %></td>
+                            <td><i class="fas fa-home"></i> <%= donation.deliveryLocation %></td>
+                            <td>
+                                <i class="fas fa-user"></i> <%= donation.receiverName %><br>
+                                <i class="fas fa-phone"></i> <%= donation.receiverContact %>
+                            </td>
+                            <td>
+                                <% if(donation.status === "Claimed") { %>
+                                    <span class="badge bg-warning text-dark">Claimed</span>
+                                <% } else if(donation.status === "Out for Delivery") { %>
+                                    <span class="badge bg-primary">Out for Delivery</span>
+                                <% } else { %>
+                                    <span class="badge bg-dark">Delivered</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if(donation.deliveryPartner) { %>
+                                    <i class="fas fa-motorcycle"></i> <%= donation.deliveryPartner %>
+                                <% } else { %>
+                                    <span class="text-muted">Not Assigned</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <% if(donation.status === "Claimed") { %>
+                                        <a href="/accept-delivery/<%= donation._id %>" class="action-btn btn-primary">
+                                            <i class="fas fa-check"></i> Accept
+                                        </a>
+                                    <% } else if(donation.status === "Out for Delivery") { %>
+                                        <a href="https://www.google.com/maps/dir/<%= donation.location %>/<%= donation.deliveryLocation %>" target="_blank" class="action-btn btn-warning">
+                                            <i class="fas fa-directions"></i> Navigate
+                                        </a>
+                                        <a href="/mark-delivered/<%= donation._id %>" class="action-btn btn-success">
+                                            <i class="fas fa-check-double"></i> Delivered
+                                        </a>
+                                    <% } else { %>
+                                        <button class="action-btn btn-dark" disabled>
+                                            <i class="fas fa-check"></i> Completed
+                                        </button>
+                                    <% } %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('deliveryTable');
+    
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        const rows = table.getElementsByTagName('tr');
+        
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+            
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const textValue = cells[j].textContent || cells[j].innerText;
+                    if (textValue.toLowerCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            
+            rows[i].style.display = found ? '' : 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

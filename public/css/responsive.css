@@ -1,0 +1,336 @@
+/* Responsive Styles - RescueMeals */
+
+/* Extra Large Devices (1200px and below) */
+@media (max-width: 1200px) {
+    .section-container,
+    .footer-container {
+        max-width: 960px;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+
+    .steps-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .partners-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Large Devices (992px and below) */
+@media (max-width: 992px) {
+    .navbar-menu {
+        display: none;
+    }
+
+    .navbar-toggle {
+        display: flex;
+    }
+
+    .navbar-mobile-menu {
+        display: block;
+    }
+
+    .navbar-auth {
+        display: none;
+    }
+
+    .hero-content h1 {
+        font-size: 50px;
+    }
+
+    .hero-content p {
+        font-size: 18px;
+    }
+
+    .hero-stats {
+        gap: 30px;
+    }
+
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-form {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .table-search input {
+        width: 200px;
+    }
+}
+
+/* Medium Devices (768px and below) */
+@media (max-width: 768px) {
+    .section-header h2 {
+        font-size: 32px;
+    }
+
+    .hero-content h1 {
+        font-size: 40px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .hero-stats {
+        gap: 20px;
+    }
+
+    .hero-stat-number {
+        font-size: 36px;
+    }
+
+    .steps-container {
+        grid-template-columns: 1fr;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .partners-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .dashboard {
+        padding: 100px 20px 20px;
+    }
+
+    .dashboard-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-actions {
+        width: 100%;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    .table-box {
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    .table {
+        min-width: 600px;
+    }
+
+    .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .table-search {
+        width: 100%;
+    }
+
+    .table-search input {
+        width: 100%;
+    }
+
+    .filter-form {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-form {
+        padding: 25px;
+    }
+}
+
+/* Small Devices (576px and below) */
+@media (max-width: 576px) {
+    .navbar-container {
+        padding: 0 15px;
+    }
+
+    .navbar-logo {
+        font-size: 22px;
+    }
+
+    .hero-content h1 {
+        font-size: 32px;
+    }
+
+    .hero-content p {
+        font-size: 14px;
+    }
+
+    .hero-stat-number {
+        font-size: 28px;
+    }
+
+    .hero-stat-label {
+        font-size: 14px;
+    }
+
+    .section-header h2 {
+        font-size: 26px;
+    }
+
+    .section-header p {
+        font-size: 16px;
+    }
+
+    .about-features {
+        grid-template-columns: 1fr;
+    }
+
+    .partners-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    .dashboard-title {
+        font-size: 28px;
+    }
+
+    .dashboard-actions {
+        flex-direction: column;
+    }
+
+    .dashboard-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .stats-card {
+        padding: 25px;
+    }
+
+    .stats-card h1 {
+        font-size: 36px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Extra Small Devices (400px and below) */
+@media (max-width: 400px) {
+    .hero-content h1 {
+        font-size: 26px;
+    }
+
+    .hero-btn {
+        padding: 14px 25px;
+        font-size: 14px;
+    }
+
+    .section-header h2 {
+        font-size: 22px;
+    }
+
+    .step-card {
+        padding: 25px 15px;
+    }
+
+    .feature-card {
+        padding: 30px 20px;
+    }
+
+    .testimonial-card {
+        padding: 30px 20px;
+    }
+
+    .contact-form {
+        padding: 20px;
+    }
+
+    .form-control {
+        height: 45px;
+        font-size: 14px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .footer,
+    .hero-section,
+    .contact-section {
+        display: none;
+    }
+
+    .dashboard {
+        padding: 20px;
+    }
+
+    .table-box {
+        box-shadow: none;
+    }
+
+    .stats-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}

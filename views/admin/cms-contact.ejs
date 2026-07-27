@@ -1,0 +1,90 @@
+<%- include('cms-dashboard', { pageTitle: 'Contact Page CMS', activePage: 'contact', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">Contact Information</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveContactInfo()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="contactForm">
+        <div class="cms-form-row">
+            <div class="cms-form-group">
+                <label class="cms-form-label">Phone Number</label>
+                <input type="text" class="cms-form-input" id="contactPhone" placeholder="+91 7232918655">
+            </div>
+            <div class="cms-form-group">
+                <label class="cms-form-label">Email Address</label>
+                <input type="email" class="cms-form-input" id="contactEmail" placeholder="support@rescuemeals.com">
+            </div>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Office Address</label>
+            <textarea class="cms-form-textarea" id="contactAddress" placeholder="Enter office address"></textarea>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Working Hours</label>
+            <input type="text" class="cms-form-input" id="contactHours" placeholder="Mon-Fri: 9AM-6PM">
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Google Maps Embed URL</label>
+            <input type="text" class="cms-form-input" id="contactMap" placeholder="Enter Google Maps embed URL">
+        </div>
+    </form>
+</div>
+
+<script>
+    async function loadContactInfo() {
+        try {
+            const response = await fetch('/api/cms/content/contact/main');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('contactPhone').value = data.content.phone || '+91 7232918655';
+                document.getElementById('contactEmail').value = data.content.email || 'support@rescuemeals.com';
+                document.getElementById('contactAddress').value = data.content.address || '';
+                document.getElementById('contactHours').value = data.content.hours || '';
+                document.getElementById('contactMap').value = data.content.map || '';
+            }
+        } catch (error) {
+            console.error('Error loading contact info:', error);
+        }
+    }
+
+    async function saveContactInfo() {
+        const content = {
+            phone: document.getElementById('contactPhone').value,
+            email: document.getElementById('contactEmail').value,
+            address: document.getElementById('contactAddress').value,
+            hours: document.getElementById('contactHours').value,
+            map: document.getElementById('contactMap').value
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/contact/main', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('Contact information saved successfully!');
+            } else {
+                showToast('Error saving contact information', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving contact info:', error);
+            showToast('Error saving contact information', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadContactInfo);
+</script>
+
+<%- include('cms-dashboard-end') %>

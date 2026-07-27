@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Deliveries</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div class="dashboard-top">
+
+        <div>
+
+            <h1 class="dashboard-title">
+                Delivery Dashboard
+            </h1>
+
+            <p class="text-muted">
+                Manage food pickups and deliveries
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="/dashboard"
+               class="dashboard-btn add-btn">
+
+                Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-box">
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>Image</th>
+
+                    <th>Food</th>
+
+                    <th>Quantity</th>
+
+                    <th>Location</th>
+
+                    <th>Status</th>
+
+                    <th>Delivery Partner</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <% donations.forEach(donation => { %>
+
+                    <tr>
+
+                        <td>
+
+                            <img
+                                src="/uploads/<%= donation.image %>"
+                                width="80"
+                                height="80"
+                                style="object-fit:cover; border-radius:10px;">
+
+                        </td>
+
+                        <td>
+                            🍱 <%= donation.foodName %>
+                        </td>
+
+                        <td>
+                            <%= donation.quantity %>
+                        </td>
+
+                        <td>
+                            📍 <%= donation.location %>
+                        </td>
+
+                        <td>
+
+                            <% if(donation.status === "Available") { %>
+
+                                <span class="badge bg-success">
+                                    Available
+                                </span>
+
+                            <% } else if(donation.status === "Out for Delivery") { %>
+
+                                <span class="badge bg-primary">
+                                    Out for Delivery
+                                </span>
+
+                            <% } else { %>
+
+                                <span class="badge bg-dark">
+                                    Delivered
+                                </span>
+
+                            <% } %>
+
+                        </td>
+
+                        <td>
+
+                            <% if(donation.deliveryPartner) { %>
+
+                                🚴 <%= donation.deliveryPartner %>
+
+                            <% } else { %>
+
+                                Not Assigned
+
+                            <% } %>
+
+                        </td>
+
+                        <td>
+
+                            <% if(donation.status === "Available") { %>
+
+                                <a
+                                    href="/accept-delivery/<%= donation._id %>"
+                                    class="btn btn-primary btn-sm">
+
+                                    Accept Delivery
+
+                                </a>
+
+                            <% } else if(donation.status === "Out for Delivery") { %>
+
+                                <a
+                                    href="/mark-delivered/<%= donation._id %>"
+                                    class="btn btn-success btn-sm">
+
+                                    Mark Delivered
+
+                                </a>
+
+                            <% } else { %>
+
+                                <button
+                                    class="btn btn-dark btn-sm"
+                                    disabled>
+
+                                    Delivered
+
+                                </button>
+
+                            <% } %>
+
+                        </td>
+
+                    </tr>
+
+                <% }) %>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

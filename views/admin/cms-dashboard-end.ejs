@@ -1,0 +1,69 @@
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="cms-toast" id="toast">
+        <div class="cms-toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Changes saved successfully!</span>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.querySelector('.cms-sidebar');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('mobile-open');
+            });
+        }
+        
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+
+            toastMessage.textContent = message;
+            toast.classList.remove('error', 'success');
+            toast.classList.add(type);
+
+            if (icon) {
+                icon.className = type === 'error'
+                    ? 'fas fa-exclamation-circle'
+                    : 'fas fa-check-circle';
+            }
+
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Make showToast available globally
+        window.showToast = showToast;
+
+        // Shared image upload helper (returns the public URL of the saved file)
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const res = await fetch('/api/cms/upload', {
+                method: 'POST',
+                body: formData
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || 'Upload failed');
+            }
+            const data = await res.json();
+            return data.url;
+        }
+        window.uploadImage = uploadImage;
+    </script>
+</body>
+</html>

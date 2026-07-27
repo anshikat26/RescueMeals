@@ -1,0 +1,82 @@
+<%- include('cms-dashboard', { pageTitle: 'About Page CMS', activePage: 'about', user: user }) %>
+
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title">About Page Content</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveAboutContent()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="aboutForm">
+        <div class="cms-form-group">
+            <label class="cms-form-label">Page Title</label>
+            <input type="text" class="cms-form-input" id="aboutTitle" placeholder="Enter page title">
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Description</label>
+            <textarea class="cms-form-textarea" id="aboutDescription" placeholder="Enter page description"></textarea>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Mission</label>
+            <textarea class="cms-form-textarea" id="aboutMission" placeholder="Enter mission statement"></textarea>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Vision</label>
+            <textarea class="cms-form-textarea" id="aboutVision" placeholder="Enter vision statement"></textarea>
+        </div>
+    </form>
+</div>
+
+<script>
+    async function loadAboutContent() {
+        try {
+            const response = await fetch('/api/cms/content/about/main');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('aboutTitle').value = data.content.title || '';
+                document.getElementById('aboutDescription').value = data.content.description || '';
+                document.getElementById('aboutMission').value = data.content.mission || '';
+                document.getElementById('aboutVision').value = data.content.vision || '';
+            }
+        } catch (error) {
+            console.error('Error loading about content:', error);
+        }
+    }
+
+    async function saveAboutContent() {
+        const content = {
+            title: document.getElementById('aboutTitle').value,
+            description: document.getElementById('aboutDescription').value,
+            mission: document.getElementById('aboutMission').value,
+            vision: document.getElementById('aboutVision').value
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/about/main', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('About page saved successfully!');
+            } else {
+                showToast('Error saving about page', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving about content:', error);
+            showToast('Error saving about page', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAboutContent);
+</script>
+
+<%- include('cms-dashboard-end') %>
