@@ -1,4 +1,4 @@
-<!-- Navigation Bar - RescueMeals -->
+<!-- Navigation Bar - RescueMeals Professional Design -->
 <link rel="stylesheet" href="/css/navbar.css">
 
 <nav class="navbar" id="navbar">
@@ -7,52 +7,74 @@
             <% if (typeof settings !== 'undefined' && settings.logo_url) { %>
                 <img src="<%= settings.logo_url %>" alt="<%= settings.website_name || 'RescueMeals' %>" class="navbar-logo-img">
             <% } else { %>
-                <i class="fas fa-leaf"></i>
+                <span class="navbar-logo-icon"><i class="fas fa-leaf"></i></span>
             <% } %>
-            <%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %>
+            <span class="navbar-logo-text"><%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %><span class="logo-dot">.</span></span>
         </a>
 
-        <ul class="navbar-menu">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#contact">Contact</a></li>
+        <ul class="navbar-menu" id="navbarMenu">
+            <li><a href="/#home" class="nav-link"><i class="fas fa-house"></i> <span>Home</span></a></li>
+            <li><a href="/#about" class="nav-link"><i class="fas fa-circle-info"></i> <span>About</span></a></li>
+            <li><a href="/#features" class="nav-link"><i class="fas fa-gem"></i> <span>Features</span></a></li>
+            <li><a href="/gallery" class="nav-link"><i class="fas fa-images"></i> <span>Gallery</span></a></li>
+            <li><a href="/#contact" class="nav-link"><i class="fas fa-headset"></i> <span>Contact</span></a></li>
         </ul>
 
         <div class="navbar-auth">
-            <a href="/login" class="navbar-btn navbar-login">Login</a>
-            <a href="/signup" class="navbar-btn navbar-signup">Register</a>
+            <% if (typeof user !== 'undefined' && user) { %>
+                <% let userDash = "/donor-dashboard"; %>
+                <% if (user.role === "NGO") userDash = "/ngo-dashboard"; %>
+                <% if (user.role === "Volunteer") userDash = "/volunteer-dashboard"; %>
+                <% if (user.role === "Admin") userDash = "/admin/cms/home"; %>
+                <a href="<%= userDash %>" class="navbar-btn navbar-dashboard-btn">
+                    <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                </a>
+                <a href="/logout" class="navbar-btn navbar-login">Logout</a>
+            <% } else { %>
+                <a href="/login" class="navbar-btn navbar-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="/signup" class="navbar-btn navbar-signup"><i class="fas fa-user-plus"></i> Register</a>
+            <% } %>
         </div>
 
-        <div class="navbar-toggle" id="navbarToggle">
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle Navigation Menu">
             <span></span>
             <span></span>
             <span></span>
-        </div>
+        </button>
     </div>
 </nav>
 
-<!-- Mobile Menu -->
+<!-- Mobile Menu Drawer -->
 <div class="navbar-mobile-menu" id="navbarMobileMenu">
-    <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#contact">Contact</a></li>
+    <ul class="navbar-mobile-links">
+        <li><a href="/#home" class="mobile-nav-link"><i class="fas fa-house"></i> Home</a></li>
+        <li><a href="/#about" class="mobile-nav-link"><i class="fas fa-circle-info"></i> About</a></li>
+        <li><a href="/#features" class="mobile-nav-link"><i class="fas fa-gem"></i> Features</a></li>
+        <li><a href="/gallery" class="mobile-nav-link"><i class="fas fa-images"></i> Gallery</a></li>
+        <li><a href="/#contact" class="mobile-nav-link"><i class="fas fa-headset"></i> Contact</a></li>
     </ul>
     <div class="navbar-mobile-auth">
-        <a href="/login" class="navbar-btn navbar-login">Login</a>
-        <a href="/signup" class="navbar-btn navbar-signup">Register</a>
+        <% if (typeof user !== 'undefined' && user) { %>
+            <% let mobileDash = "/donor-dashboard"; %>
+            <% if (user.role === "NGO") mobileDash = "/ngo-dashboard"; %>
+            <% if (user.role === "Volunteer") mobileDash = "/volunteer-dashboard"; %>
+            <% if (user.role === "Admin") mobileDash = "/admin/cms/home"; %>
+            <a href="<%= mobileDash %>" class="navbar-btn navbar-dashboard-btn mobile-btn">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="/logout" class="navbar-btn navbar-login mobile-btn">Logout</a>
+        <% } else { %>
+            <a href="/login" class="navbar-btn navbar-login mobile-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="/signup" class="navbar-btn navbar-signup mobile-btn"><i class="fas fa-user-plus"></i> Register</a>
+        <% } %>
     </div>
 </div>
 
 <script>
-    // Navbar scroll effect
+    // Navbar scroll glassmorphism effect
+    const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', function() {
-        const navbar = document.getElementById('navbar');
-        if (window.scrollY > 50) {
+        if (window.scrollY > 30) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
@@ -66,27 +88,37 @@
     navbarToggle.addEventListener('click', function() {
         navbarToggle.classList.toggle('active');
         navbarMobileMenu.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
     });
 
-    // Close mobile menu when clicking a link
+    // Close mobile menu when clicking any link
     const mobileLinks = navbarMobileMenu.querySelectorAll('a');
     mobileLinks.forEach(link => {
         link.addEventListener('click', function() {
             navbarToggle.classList.remove('active');
             navbarMobileMenu.classList.remove('active');
+            document.body.classList.remove('menu-open');
         });
     });
 
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    // Active Section ScrollSpy
+    const sections = document.querySelectorAll('section[id], header[id]');
+    const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+
+    window.addEventListener('scroll', () => {
+        let current = 'home';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 120;
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
             }
         });
     });

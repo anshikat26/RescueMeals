@@ -33,6 +33,10 @@ router.post("/signup", async (req, res) => {
             role
         } = req.body;
 
+        // Prevent public users from creating Admin accounts
+        const allowedRoles = ["Restaurant", "Institution", "NGO", "Volunteer"];
+        const sanitizedRole = allowedRoles.includes(role) ? role : "Volunteer";
+
         // CHECK EXISTING EMAIL
 
         const existingUser =
@@ -62,7 +66,7 @@ router.post("/signup", async (req, res) => {
 
             institution,
 
-            role
+            role: sanitizedRole
         });
 
         await user.save();

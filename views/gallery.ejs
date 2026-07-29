@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact Gallery & Documentation - <%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %></title>
+    <meta name="description" content="Explore authentic photos from food distribution drives, child welfare programs, and downloadable impact documentation across India.">
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <style>
+        .gallery-page-header {
+            padding: 140px 20px 60px;
+            background: linear-gradient(135deg, #0A2E12 0%, #144919 50%, #0F3D1A 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        .gallery-page-header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        .gallery-page-header p {
+            font-size: 16.5px;
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 680px;
+            margin: 0 auto 20px;
+        }
+        .gallery-breadcrumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #A7F3D0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 16px;
+            border-radius: 9999px;
+            border: 1px solid rgba(167, 243, 208, 0.3);
+            margin-bottom: 20px;
+        }
+        .gallery-breadcrumb a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('partials/navbar') %>
+
+    <!-- Gallery Page Hero Header -->
+    <header class="gallery-page-header">
+        <div class="gallery-breadcrumb">
+            <a href="/"><i class="fas fa-house"></i> Home</a> <i class="fas fa-chevron-right" style="font-size: 10px;"></i> <span>Impact Gallery & Documentation</span>
+        </div>
+        <h1>Impact Gallery & Resources</h1>
+        <p>Explore authentic photos from ground food distribution drives, child welfare programs, and official downloadable documentation resources.</p>
+    </header>
+
+    <!-- Main Gallery & Documentation Section -->
+    <section class="gallery-section" id="gallery">
+        <div class="section-container">
+            <!-- Filter Tabs -->
+            <div class="gallery-tabs">
+                <button class="gallery-tab active" data-filter="all"><i class="fas fa-layer-group"></i> All Media</button>
+                <button class="gallery-tab" data-filter="drives"><i class="fas fa-truck-ramp-box"></i> Food Drives</button>
+                <button class="gallery-tab" data-filter="children"><i class="fas fa-child-reaching"></i> Children Impact</button>
+                <button class="gallery-tab" data-filter="volunteers"><i class="fas fa-hand-holding-heart"></i> Volunteers</button>
+                <button class="gallery-tab" data-filter="docs"><i class="fas fa-folder-open"></i> Documentation</button>
+            </div>
+
+            <!-- Photo & Media Grid -->
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery Item 1: Food Drive -->
+                <div class="gallery-card" data-category="drives">
+                    <div class="gallery-img-wrapper">
+                        <img src="/images/hero-ngo-bg.jpg" alt="Lucknow Night Shelter Food Drive" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <span class="gallery-cat-badge amber"><i class="fas fa-location-dot"></i> Lucknow Drive</span>
+                            <button class="gallery-zoom-btn" onclick="openLightbox('/images/hero-ngo-bg.jpg', 'Lucknow Night Shelter Food Drive')"><i class="fas fa-expand"></i> Expand</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Lucknow Night Shelter Drive</h3>
+                        <p>Over 450 fresh hot meals safely distributed to night shelter residents and daily wagers.</p>
+                        <span class="gallery-date"><i class="far fa-calendar-alt"></i> June 2025 • FSSAI Verified</span>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2: Children Impact -->
+                <div class="gallery-card" data-category="children">
+                    <div class="gallery-img-wrapper">
+                        <img src="/images/indian-children-meals.jpg" alt="Asha Shelter Home Children Meal Time" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <span class="gallery-cat-badge emerald"><i class="fas fa-heart"></i> Child Welfare</span>
+                            <button class="gallery-zoom-btn" onclick="openLightbox('/images/indian-children-meals.jpg', 'Asha Shelter Home Children Meal Time')"><i class="fas fa-expand"></i> Expand</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Nutritious Mid-Day Meal Serving</h3>
+                        <p>School children enjoying fresh, balanced meals at Asha Shelter Home, Delhi-NCR.</p>
+                        <span class="gallery-date"><i class="far fa-calendar-alt"></i> Daily Feeding Program</span>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3: Volunteer Drive -->
+                <div class="gallery-card" data-category="volunteers">
+                    <div class="gallery-img-wrapper">
+                        <img src="/images/volunteer-food-drive.jpg" alt="Youth Volunteer Doorstep Handover" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <span class="gallery-cat-badge blue"><i class="fas fa-bolt"></i> Doorstep Pickup</span>
+                            <button class="gallery-zoom-btn" onclick="openLightbox('/images/volunteer-food-drive.jpg', 'Youth Volunteer Doorstep Handover')"><i class="fas fa-expand"></i> Expand</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Student Volunteer Rapid Logistics</h3>
+                        <p>Dedicated youth volunteers picking up sealed food boxes from Royal Banquet in under 25 mins.</p>
+                        <span class="gallery-date"><i class="far fa-calendar-alt"></i> Pan-India Fleet</span>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 4: Tech & Workflow -->
+                <div class="gallery-card" data-category="drives">
+                    <div class="gallery-img-wrapper">
+                        <img src="/images/app-workflow.jpg" alt="RescueMeals Digital Redistribution Diagram" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <span class="gallery-cat-badge teal"><i class="fas fa-diagram-project"></i> Infrastructure</span>
+                            <button class="gallery-zoom-btn" onclick="openLightbox('/images/app-workflow.jpg', 'RescueMeals Digital Redistribution Diagram')"><i class="fas fa-expand"></i> Expand</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Digital Redistribution System</h3>
+                        <p>Real-time matching workflow connecting surplus food to local non-profit shelters.</p>
+                        <span class="gallery-date"><i class="far fa-calendar-alt"></i> Tech Infrastructure</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Downloadable Documentation & Reports Hub -->
+            <div class="doc-hub-container" id="docHubContainer" data-category="docs">
+                <div class="doc-hub-header">
+                    <i class="fas fa-file-shield"></i>
+                    <div>
+                        <h3>Official Documentation & Reports Hub</h3>
+                        <p>Download verified impact audits, FSSAI food safety manuals, and NGO registration kits</p>
+                    </div>
+                </div>
+
+                <div class="doc-cards-grid">
+                    <!-- Doc 1: Impact Report -->
+                    <div class="doc-card">
+                        <div class="doc-icon amber">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="doc-details">
+                            <h4>Annual Impact & ESG Audit Report</h4>
+                            <p>Detailed breakdown of 15,000+ meals saved, CO₂ reduction stats, and financial audit.</p>
+                            <span class="doc-meta"><i class="fas fa-file-arrow-down"></i> PDF Document • 4.2 MB • 2025-26 Edition</span>
+                        </div>
+                        <a href="/images/app-workflow.jpg" download="RescueMeals_Annual_Impact_Report.jpg" class="doc-download-btn amber"><i class="fas fa-download"></i> Download</a>
+                    </div>
+
+                    <!-- Doc 2: FSSAI Safety Guidelines -->
+                    <div class="doc-card">
+                        <div class="doc-icon emerald">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div class="doc-details">
+                            <h4>FSSAI Surplus Food Handling Manual</h4>
+                            <p>Official hygiene protocols, temperature checks, and insulated packaging standards.</p>
+                            <span class="doc-meta"><i class="fas fa-file-arrow-down"></i> PDF Manual • 1.8 MB • Certified Standards</span>
+                        </div>
+                        <a href="/images/app-workflow.jpg" download="FSSAI_Surplus_Food_Handling_Manual.jpg" class="doc-download-btn emerald"><i class="fas fa-download"></i> Download</a>
+                    </div>
+
+                    <!-- Doc 3: NGO Registration Kit -->
+                    <div class="doc-card">
+                        <div class="doc-icon blue">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="doc-details">
+                            <h4>NGO Partnership & 80G Verification Kit</h4>
+                            <p>Complete onboarding guide, shelter capacity verification form, and agreement templates.</p>
+                            <span class="doc-meta"><i class="fas fa-file-arrow-down"></i> ZIP Archive • 2.5 MB • Registration Guide</span>
+                        </div>
+                        <a href="/images/app-workflow.jpg" download="RescueMeals_NGO_Registration_Kit.jpg" class="doc-download-btn blue"><i class="fas fa-download"></i> Download</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal for Fullscreen Photo Viewing -->
+    <div class="gallery-lightbox" id="galleryLightbox" onclick="closeLightbox(event)">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <img src="" alt="" id="lightboxImg">
+            <p id="lightboxCaption"></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('partials/footer') %>
+
+    <!-- Gallery Lightbox & Tab Filtering JS -->
+    <script>
+        function filterGallery(category) {
+            const tabs = document.querySelectorAll('.gallery-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+
+            const selectedTab = document.querySelector(`.gallery-tab[data-filter="${category}"]`);
+            if (selectedTab) selectedTab.classList.add('active');
+
+            const cards = document.querySelectorAll('.gallery-card');
+            const docHub = document.getElementById('docHubContainer');
+
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (category === 'all' || category === 'docs') {
+                docHub.style.display = 'block';
+            } else {
+                docHub.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.gallery-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const filter = tab.getAttribute('data-filter');
+                    filterGallery(filter);
+                });
+            });
+        });
+
+        function openLightbox(src, caption) {
+            const lightbox = document.getElementById('galleryLightbox');
+            const img = document.getElementById('lightboxImg');
+            const cap = document.getElementById('lightboxCaption');
+            img.src = src;
+            cap.innerText = caption;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(e) {
+            const lightbox = document.getElementById('galleryLightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>

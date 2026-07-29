@@ -14,11 +14,12 @@
  * If the email already exists, its password is reset and role set to Admin.
  */
 
+require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/rescuemeals";
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://127.0.0.1:27017/rescuemeals";
 
 async function run() {
     const email = (process.argv[2] || "").trim().toLowerCase();

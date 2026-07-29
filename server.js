@@ -17,10 +17,30 @@ const WebsiteSettings = require("./models/WebsiteSettings");
 const Gallery = require("./models/Gallery");
 const FAQ = require("./models/FAQ");
 const Testimonial = require("./models/Testimonial");
+const User = require("./models/User");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 initializePassport(passport);
 
+
+// Content Security Policy (CSP) & Header Middleware
+app.use((req, res, next) => {
+    res.setHeader(
+        "Content-Security-Policy",
+        "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' http: https: ws: wss:; img-src 'self' http: https: data: blob:; font-src 'self' http: https: data:; script-src 'self' http: https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' http: https: 'unsafe-inline';"
+    );
+    next();
+});
+
+// Chrome DevTools & Well-Known Endpoint Handler (Prevents 404 & CSP errors)
+app.get("/.well-known/appspecific/com.chrome.devtools.json", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
+
+app.get(/^\/\.well-known\/.*/, (req, res) => {
+    res.status(200).end();
+});
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -40,9 +60,36 @@ app.use(passport.session());
 app.use(flash());
 
 
+// Function to seed default Admin user if not present
+async function seedAdminUser() {
+    try {
+        const adminEmail = "admin@rescuemeals.com";
+        const existingAdmin = await User.findOne({ email: adminEmail });
+        if (!existingAdmin) {
+            const hashedPassword = await bcrypt.hash("MySecret123", 10);
+            const newAdmin = new User({
+                name: "Site Admin",
+                email: adminEmail,
+                password: hashedPassword,
+                institution: "RescueMeals",
+                role: "Admin"
+            });
+            await newAdmin.save();
+            console.log("👑 Default Super Admin seeded: admin@rescuemeals.com");
+        } else {
+            console.log("🔒 Admin account verified in database.");
+        }
+    } catch (err) {
+        console.error("Error seeding default admin:", err.message);
+    }
+}
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log("✅ MongoDB Connected"))
+    .then(async () => {
+        console.log("✅ MongoDB Connected");
+        await seedAdminUser();
+    })
     .catch(err => console.error(err));
 
 // Middleware to make data available to all views
@@ -70,12 +117,14 @@ app.use(async (req, res, next) => {
         // Make data available to all views
         res.locals.settings = settings;
         res.locals.content = contentMap;
+        res.locals.user = req.user || null;
 
         next();
     } catch (error) {
         console.error("Error in data middleware:", error);
         res.locals.settings = {};
         res.locals.content = {};
+        res.locals.user = req.user || null;
         next();
     }
 });
@@ -139,6 +188,33 @@ app.get("/", async (req, res) => {
             gallery: [],
             faqs: [],
             testimonials: []
+        });
+    }
+});
+
+// Standalone Gallery Page Route
+app.get(["/gallery", "/Gallery"], async (req, res) => {
+    try {
+        let settings = await WebsiteSettings.findOne() || {};
+        const allContent = await WebsiteContent.find({});
+        const contentMap = {};
+        allContent.forEach(item => {
+            if (!contentMap[item.page]) contentMap[item.page] = {};
+            contentMap[item.page][item.section] = item.content;
+        });
+
+        const gallery = await Gallery.find().sort({ order: 1 });
+        res.render("gallery", {
+            settings,
+            content: contentMap,
+            gallery
+        });
+    } catch (error) {
+        console.error("Error loading gallery page:", error);
+        res.render("gallery", {
+            settings: {},
+            content: {},
+            gallery: []
         });
     }
 });

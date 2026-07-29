@@ -23,7 +23,9 @@
 </head>
 
 <body>
-<div class="dashboard">
+<%- include('../partials/dashboard-header') %>
+
+<div class="dashboard" style="padding-top: 30px;">
     <div class="dashboard-top">
         <div>
             <h1 class="dashboard-title">Donor Dashboard</h1>
@@ -32,9 +34,6 @@
         <div class="dashboard-actions">
             <a href="/donate" class="dashboard-btn add-btn">
                 <i class="fas fa-plus"></i> Add Donation
-            </a>
-            <a href="/logout" class="dashboard-btn logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>
     </div>

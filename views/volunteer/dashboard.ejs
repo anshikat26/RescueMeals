@@ -23,16 +23,13 @@
 </head>
 
 <body>
-<div class="dashboard">
+<%- include('../partials/dashboard-header') %>
+
+<div class="dashboard" style="padding-top: 30px;">
     <div class="dashboard-top">
         <div>
             <h1 class="dashboard-title">Volunteer Dashboard</h1>
             <p class="dashboard-subtitle">Manage food deliveries and help your community</p>
-        </div>
-        <div class="dashboard-actions">
-            <a href="/logout" class="dashboard-btn logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
         </div>
     </div>
 

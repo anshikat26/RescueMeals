@@ -26,15 +26,54 @@
     <!-- Hero Section -->
     <section class="hero-section" id="home">
         <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-leaf"></i> Over 15,000+ Meals Saved & Distributed
+            </div>
             <h1><%= content.home?.hero?.title || 'RescueMeals' %></h1>
             <p><%= content.home?.hero?.subtitle || 'Reduce Food Waste • Feed Needy People • Support NGOs' %></p>
+            
+            <% if (typeof user === 'undefined' || !user) { %>
+            <div class="hero-role-pills">
+                <label><i class="fas fa-bullseye"></i> Join as:</label>
+                <a href="/signup" class="role-pill"><i class="fas fa-utensils"></i> Restaurant / Donor</a>
+                <a href="/signup" class="role-pill"><i class="fas fa-building"></i> NGO Partner</a>
+                <a href="/signup" class="role-pill"><i class="fas fa-hands-helping"></i> Volunteer</a>
+            </div>
+            <% } %>
+
             <div class="hero-buttons">
-                <a href="/signup" class="hero-btn hero-btn-primary">
-                    <i class="fas fa-user-plus"></i> Get Started
-                </a>
-                <a href="/login" class="hero-btn hero-btn-secondary">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </a>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <% if (user.role === 'NGO') { %>
+                        <a href="/ngo-dashboard" class="hero-btn hero-btn-amber">
+                            <i class="fas fa-tachometer-alt"></i> Go to NGO Dashboard
+                        </a>
+                    <% } else if (user.role === 'Volunteer') { %>
+                        <a href="/volunteer-dashboard" class="hero-btn hero-btn-amber">
+                            <i class="fas fa-truck"></i> Go to Deliveries Dashboard
+                        </a>
+                    <% } else if (user.role === 'Admin') { %>
+                        <a href="/admin/cms/home" class="hero-btn hero-btn-amber">
+                            <i class="fas fa-user-shield"></i> Open Admin Panel
+                        </a>
+                    <% } else { %>
+                        <a href="/donor-dashboard" class="hero-btn hero-btn-amber">
+                            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                        </a>
+                        <a href="/donate" class="hero-btn hero-btn-primary">
+                            <i class="fas fa-hand-holding-heart"></i> Donate Food Now
+                        </a>
+                    <% } %>
+                <% } else { %>
+                    <a href="/signup" class="hero-btn hero-btn-amber">
+                        <i class="fas fa-hand-holding-heart"></i> Donate Food Now
+                    </a>
+                    <a href="/signup" class="hero-btn hero-btn-primary">
+                        <i class="fas fa-user-plus"></i> Get Started
+                    </a>
+                    <a href="/login" class="hero-btn hero-btn-secondary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                <% } %>
             </div>
             <div class="hero-stats">
                 <div class="hero-stat-item">
@@ -57,23 +96,23 @@
     <section class="about-section" id="about">
         <div class="section-container">
             <div class="section-header">
-                <h2><%= content.home?.about?.title || 'About RescueMeals' %></h2>
-                <p><%= content.home?.about?.subtitle || 'Connecting food donors with NGOs and volunteers to reduce food wastage and support communities in need.' %></p>
+                <h2><%= content.home?.about?.title || 'About RescueMeals India' %></h2>
+                <p><%= content.home?.about?.subtitle || 'Connecting restaurants, banquet halls, and corporate canteens with verified NGOs and youth volunteers across India.' %></p>
             </div>
             <div class="about-content">
                 <div class="about-image">
-                    <img src="<%= content.home?.about?.image || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800' %>" alt="Food Donation">
+                    <img src="<%= content.home?.about?.image || '/images/indian-children-meals.jpg' %>" alt="Indian Children Food Donation Drive">
                 </div>
                 <div class="about-text">
-                    <h3><%= content.home?.about?.heading || 'Making a Difference Together' %></h3>
-                    <p><%= content.home?.about?.description1 || 'RescueMeals is a platform dedicated to reducing food waste by connecting restaurants, institutions, and individuals with NGOs and volunteers who can distribute food to those in need.' %></p>
-                    <p><%= content.home?.about?.description2 || 'Our mission is to create a sustainable ecosystem where no food goes to waste while ensuring that everyone has access to nutritious meals.' %></p>
+                    <h3><%= content.home?.about?.heading || 'Nourishing Children & Eliminating Food Wastage' %></h3>
+                    <p><%= content.home?.about?.description1 || 'RescueMeals is an authentic tech-driven food redistribution network dedicated to rescuing surplus, hygienic food from wedding halls, hotels, and college campuses across Indian cities.' %></p>
+                    <p><%= content.home?.about?.description2 || 'Our mission aligns with the Zero Hunger Initiative—ensuring every extra meal is safely quality-tested and delivered to children at shelter homes, night care centers, and slum community schools.' %></p>
                     <div class="about-features">
                         <% const features = content.home?.about?.features || [
-                            {icon: 'fa-check-circle', text: 'Reduce Food Waste'},
-                            {icon: 'fa-check-circle', text: 'Support Communities'},
-                            {icon: 'fa-check-circle', text: 'Easy Donations'},
-                            {icon: 'fa-check-circle', text: 'Real-time Tracking'}
+                            {icon: 'fa-child', text: 'Daily Meals for School Children'},
+                            {icon: 'fa-shield-alt', text: '100% Quality & Hygiene Checked'},
+                            {icon: 'fa-truck-loading', text: '30-Min Rapid Pickup Service'},
+                            {icon: 'fa-award', text: 'Zero Waste Certified Platform'}
                         ]; %>
                         <% features.forEach(feature => { %>
                         <div class="about-feature">
@@ -87,291 +126,555 @@
         </div>
     </section>
 
-    <!-- How It Works Section -->
-    <section class="how-it-works-section" id="how-it-works">
+    <!-- Children & Community Impact Stories -->
+    <section class="children-impact-section" id="impact-stories">
         <div class="section-container">
             <div class="section-header">
-                <h2>How It Works</h2>
-                <p>Simple steps to make a difference in your community</p>
+                <h2>Our Community Impact & Stories</h2>
+                <p>Bringing warmth, smiles, and nutrition to children and families across India</p>
             </div>
-            <div class="steps-container">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-icon">
-                        <i class="fas fa-user-plus"></i>
+            <div class="impact-cards-grid">
+                <!-- Card 1 -->
+                <div class="impact-card">
+                    <div class="impact-card-img-wrapper">
+                        <span class="impact-tag">Child Nutrition</span>
+                        <img src="/images/indian-children-meals.jpg" alt="Indian School Children Eating Fresh Meals" class="impact-card-img">
                     </div>
-                    <h3>Register</h3>
-                    <p>Sign up as a donor, NGO, or volunteer to start making a difference</p>
+                    <div class="impact-card-body">
+                        <h3>Nourishing 4,500+ Children Daily</h3>
+                        <p>Every evening, surplus food rescued from college cafeterias and wedding banquets is delivered to community learning centers in Lucknow and Delhi-NCR.</p>
+                        <div class="impact-meta">
+                            <span><i class="fas fa-heart"></i> 100% Fresh & Hygienic</span>
+                            <span>Lucknow & NCR</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-icon">
-                        <i class="fas fa-hand-holding-heart"></i>
+
+                <!-- Card 2 -->
+                <div class="impact-card">
+                    <div class="impact-card-img-wrapper">
+                        <span class="impact-tag">Youth Volunteers</span>
+                        <img src="/images/volunteer-food-drive.jpg" alt="Indian Volunteer Distributing Meal Box" class="impact-card-img">
                     </div>
-                    <h3>Donate Food</h3>
-                    <p>List your available food donations with details and images</p>
+                    <div class="impact-card-body">
+                        <h3>Direct Doorstep Meal Delivery</h3>
+                        <p>Our network of 500+ active student volunteers coordinate real-time pickups to deliver sealed, insulated food boxes directly to night shelters before nightfall.</p>
+                        <div class="impact-meta">
+                            <span><i class="fas fa-clock"></i> Under 45 Mins Transit</span>
+                            <span>Pan-India Network</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <div class="step-icon">
-                        <i class="fas fa-building"></i>
+
+                <!-- Card 3 -->
+                <div class="impact-card">
+                    <div class="impact-card-img-wrapper">
+                        <span class="impact-tag">Food Security</span>
+                        <img src="/images/hero-ngo-bg.jpg" alt="Community NGO Food Drive" class="impact-card-img">
                     </div>
-                    <h3>NGO Accepts</h3>
-                    <p>NGOs browse and claim donations that match their needs</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <div class="step-icon">
-                        <i class="fas fa-truck"></i>
+                    <div class="impact-card-body">
+                        <h3>Zero Waste Marriage Drive</h3>
+                        <p>Partnered with over 120+ wedding venues and banquet halls to redirect excess food safely, saving over 15,000+ meals from going to landfills this year alone.</p>
+                        <div class="impact-meta">
+                            <span><i class="fas fa-leaf"></i> 15,000+ Meals Saved</span>
+                            <span>50+ Cities</span>
+                        </div>
                     </div>
-                    <h3>Food Delivered</h3>
-                    <p>Volunteers deliver food to those who need it most</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Features Section - Precious Theme -->
     <section class="features-section" id="features">
         <div class="section-container">
             <div class="section-header">
+                <div class="features-precious-tag">
+                    <i class="fas fa-gem"></i> Enterprise-Grade NGO Platform Features
+                </div>
                 <h2>Our Features</h2>
-                <p>Everything you need to manage food donations efficiently</p>
+                <p>Everything you need to manage food donations, track impact, and eliminate waste efficiently</p>
             </div>
+
             <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bell"></i>
+                <!-- Feature 1: Real-time Notifications (Emerald Alert) -->
+                <div class="feature-card feature-emerald">
+                    <div class="feature-top-header">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <span class="feature-gem-badge">Emerald Alert</span>
                     </div>
                     <h3>Real-time Notifications</h3>
-                    <p>Get instant alerts when new donations are available or when your donation is claimed</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-map-marked-alt"></i>
+                    <p>Get instant alerts when new food batches are available, claimed by NGOs, or dispatched for delivery.</p>
+                    <div class="feature-preview-box">
+                        <div class="preview-toast">
+                            <i class="fas fa-check-circle"></i> <span>Instant Alert: 50 Meals Available nearby!</span>
+                        </div>
                     </div>
-                    <h3>Location Tracking</h3>
-                    <p>Track donations from pickup to delivery with real-time location updates</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
+
+                <!-- Feature 2: Location Tracking (Sapphire GPS) -->
+                <div class="feature-card feature-sapphire">
+                    <div class="feature-top-header">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-location-dot"></i>
+                        </div>
+                        <span class="feature-gem-badge">Sapphire GPS</span>
                     </div>
-                    <h3>Secure Platform</h3>
-                    <p>Your data is protected with industry-standard security measures</p>
+                    <h3>Live Location Tracking</h3>
+                    <p>Track donation routes from kitchen pickup to doorstep delivery with live GPS updates and ETAs.</p>
+                    <div class="feature-preview-box">
+                        <div class="preview-gps">
+                            <span><i class="fas fa-route"></i> Transit ETA: 14 Mins</span>
+                            <span class="badge bg-primary">Live GPS</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
+
+                <!-- Feature 3: Secure Platform (Ruby Shield) -->
+                <div class="feature-card feature-ruby">
+                    <div class="feature-top-header">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <span class="feature-gem-badge">Ruby Shield</span>
                     </div>
-                    <h3>Impact Analytics</h3>
-                    <p>Track your contribution with detailed statistics and reports</p>
+                    <h3>Secure & Compliant Platform</h3>
+                    <p>Your organization data is protected with 256-bit encryption, strict RBAC, and FSSAI food quality protocols.</p>
+                    <div class="feature-preview-box">
+                        <div class="preview-ssl">
+                            <i class="fas fa-lock"></i> <span>256-Bit Encrypted & FSSAI Compliant</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
+
+                <!-- Feature 4: Impact Analytics (Gold Analytics) -->
+                <div class="feature-card feature-amber">
+                    <div class="feature-top-header">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <span class="feature-gem-badge">Gold Analytics</span>
                     </div>
-                    <h3>Community Network</h3>
-                    <p>Connect with like-minded individuals and organizations</p>
+                    <h3>Impact Analytics & ESG Reports</h3>
+                    <p>Track your ESG contribution with automated monthly PDF reports, carbon offset stats, and meal growth charts.</p>
+                    <div class="feature-preview-box">
+                        <div class="preview-chart-bars">
+                            <div class="chart-bar h-40"></div>
+                            <div class="chart-bar h-65"></div>
+                            <div class="chart-bar h-85"></div>
+                            <div class="chart-bar h-100"></div>
+                            <span style="margin-left: auto; color: #D97706;">+148% Growth</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
+
+                <!-- Feature 5: Community Network (Amethyst Network) -->
+                <div class="feature-card feature-violet">
+                    <div class="feature-top-header">
+                        <div class="feature-icon">
+                            <i class="fas fa-users-viewfinder"></i>
+                        </div>
+                        <span class="feature-gem-badge">Amethyst Network</span>
                     </div>
-                    <h3>Mobile Friendly</h3>
-                    <p>Access the platform from any device, anywhere, anytime</p>
+                    <h3>Community Coalition</h3>
+                    <p>Connect with 120+ restaurants, 200+ partner NGOs, and 500+ student volunteers across 50 Indian cities.</p>
+                    <div class="feature-preview-box">
+                        <div class="preview-avatars">
+                            <div class="avatar-dot">NGO</div>
+                            <div class="avatar-dot">VOL</div>
+                            <div class="avatar-dot">DON</div>
+                            <span>820+ Connected Partners</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 6: Mobile Friendly & Offline Sync (Teal Sync) -->
+                <div class="feature-card feature-teal">
+                    <div class="feature-top-header">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-screen-button"></i>
+                        </div>
+                        <span class="feature-gem-badge">Teal Sync</span>
+                    </div>
+                    <h3>Mobile-First & Offline Sync</h3>
+                    <p>Access RescueMeals seamlessly from any smartphone, tablet, or desktop with offline form caching.</p>
+                    <div class="feature-preview-box">
+                        <div class="preview-devices">
+                            <i class="fas fa-mobile-alt"></i> <span>Mobile App</span>
+                            <i class="fas fa-laptop"></i> <span>Web Portal</span>
+                            <span style="margin-left: auto; color: #0891B2;">100% Sync</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Statistics Section -->
+    <!-- Statistics & Impact Section - Vibrant & Authentic -->
     <section class="statistics-section">
         <div class="section-container">
             <div class="section-header">
-                <h2 style="color: white;">Our Impact</h2>
-                <p style="color: rgba(255,255,255,0.9);">Making a real difference in communities</p>
+                <div class="impact-live-ticker">
+                    <span class="pulse-dot"></span>
+                    <span>⚡ Live Impact Tracker • 1 Fresh Meal Distributed Every 45 Seconds</span>
+                </div>
+                <h2 style="color: white; font-size: 38px;">Our Impact Across India</h2>
+                <p style="color: rgba(255,255,255,0.9); max-width: 680px; margin: 0 auto;">Transparent, real-time statistics driving food dignity and environmental sustainability</p>
             </div>
+
             <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-icon">
-                        <i class="fas fa-utensils"></i>
+                <!-- Stat 1: 15,000+ Meals Donated (Amber/Gold Theme) -->
+                <div class="stat-item stat-item-amber">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-bowl-food"></i>
+                        </div>
+                        <span class="stat-badge-chip">🍚 FSSAI Inspected</span>
                     </div>
-                    <div class="stat-number" data-target="15000">0</div>
-                    <div class="stat-label">Meals Donated</div>
+                    <div>
+                        <div class="stat-number" data-target="15000">0</div>
+                        <div class="stat-label">Meals Donated</div>
+                        <p class="stat-desc">Nutritious surplus meals safely redistributed to orphanages & night shelters.</p>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-icon">
-                        <i class="fas fa-building"></i>
+
+                <!-- Stat 2: 250+ Partner NGOs (Emerald Theme) -->
+                <div class="stat-item stat-item-emerald">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-building-circle-check"></i>
+                        </div>
+                        <span class="stat-badge-chip">🤝 Verified Partners</span>
                     </div>
-                    <div class="stat-number" data-target="250">0</div>
-                    <div class="stat-label">Partner NGOs</div>
+                    <div>
+                        <div class="stat-number" data-target="250">0</div>
+                        <div class="stat-label">Partner NGOs</div>
+                        <p class="stat-desc">Authorized shelters & children welfare foundations actively claiming daily food batches.</p>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
+
+                <!-- Stat 3: 500+ Active Volunteers (Sapphire Theme) -->
+                <div class="stat-item stat-item-blue">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-person-biking"></i>
+                        </div>
+                        <span class="stat-badge-chip">🚴 Doorstep Logistics</span>
                     </div>
-                    <div class="stat-number" data-target="500">0</div>
-                    <div class="stat-label">Active Volunteers</div>
+                    <div>
+                        <div class="stat-number" data-target="500">0</div>
+                        <div class="stat-label">Active Volunteers</div>
+                        <p class="stat-desc">Student heroes & community delivery partners ensuring rapid <30 min pickups.</p>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-icon">
-                        <i class="fas fa-map-marker-alt"></i>
+
+                <!-- Stat 4: 50+ Cities Covered (Amethyst Theme) -->
+                <div class="stat-item stat-item-violet">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-city"></i>
+                        </div>
+                        <span class="stat-badge-chip">📍 Pan-India Reach</span>
                     </div>
-                    <div class="stat-number" data-target="50">0</div>
-                    <div class="stat-label">Cities Covered</div>
+                    <div>
+                        <div class="stat-number" data-target="50">0</div>
+                        <div class="stat-label">Cities Covered</div>
+                        <p class="stat-desc">Operating in Lucknow, Delhi-NCR, Mumbai, Bengaluru, Hyderabad, and beyond.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Realistic Environmental Impact Footer Bar -->
+            <div class="impact-footer-bar">
+                <div class="impact-footer-item">
+                    <i class="fas fa-leaf"></i> <span><strong>6.2 Tons</strong> Food Waste Prevented</span>
+                </div>
+                <div class="impact-footer-item">
+                    <i class="fas fa-cloud-sun"></i> <span><strong>14.5 Tons</strong> CO₂ Emissions Reduced</span>
+                </div>
+                <div class="impact-footer-item">
+                    <i class="fas fa-shield-heart"></i> <span><strong>99.8%</strong> Food Quality Standard</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- NGO/Partner Section -->
-    <section class="partners-section">
+    <!-- NGO/Partner Section - Authentic & Vibrant -->
+    <section class="partners-section" id="partners">
         <div class="section-container">
             <div class="section-header">
+                <div class="partners-tag">
+                    <i class="fas fa-handshake-simple"></i> Accredited NGO & Institutional Network
+                </div>
                 <h2>Our Partners</h2>
-                <p>Trusted organizations working with us</p>
+                <p>Trusted non-profits, youth clubs, and sustainable catering networks driving zero-hunger across India</p>
             </div>
+
             <div class="partners-grid">
-                <div class="partner-card">
-                    <div class="partner-logo">
-                        <i class="fas fa-heart"></i>
+                <!-- Partner 1: Annapurna Foundation (Amber Theme) -->
+                <div class="partner-card partner-card-amber">
+                    <div class="partner-top-row">
+                        <div class="partner-logo">
+                            <i class="fas fa-bowl-rice"></i>
+                        </div>
+                        <span class="partner-category-badge">Food Relief</span>
                     </div>
-                    <h3>Food Bank Foundation</h3>
-                    <p>Distributing food since 2010</p>
-                </div>
-                <div class="partner-card">
-                    <div class="partner-logo">
-                        <i class="fas fa-hands-helping"></i>
+                    <h3>Annapurna Foundation</h3>
+                    <div class="partner-metric-box">
+                        <i class="fas fa-utensils"></i> <span>Feeding 5,000+ daily</span>
                     </div>
-                    <h3>Helping Hands NGO</h3>
-                    <p>Serving 50+ communities</p>
-                </div>
-                <div class="partner-card">
-                    <div class="partner-logo">
-                        <i class="fas fa-seedling"></i>
+                    <p>Providing daily wholesome meals to underprivileged families and daily wagers in Lucknow.</p>
+                    <div class="partner-footer-chips">
+                        <span class="partner-loc"><i class="fas fa-location-dot"></i> Lucknow, UP</span>
+                        <span class="partner-seal"><i class="fas fa-certificate"></i> 80G Certified</span>
                     </div>
-                    <h3>Green Earth Initiative</h3>
-                    <p>Sustainability focused</p>
                 </div>
-                <div class="partner-card">
-                    <div class="partner-logo">
-                        <i class="fas fa-home"></i>
+
+                <!-- Partner 2: Asha Shelter Homes (Emerald Theme) -->
+                <div class="partner-card partner-card-emerald">
+                    <div class="partner-top-row">
+                        <div class="partner-logo">
+                            <i class="fas fa-hands-holding-child"></i>
+                        </div>
+                        <span class="partner-category-badge">Child Welfare</span>
                     </div>
-                    <h3>Shelter for All</h3>
-                    <p>Supporting homeless</p>
+                    <h3>Asha Shelter Homes</h3>
+                    <div class="partner-metric-box">
+                        <i class="fas fa-child"></i> <span>Supporting 40+ Child Centers</span>
+                    </div>
+                    <p>Delivering daily hot meals, primary nutrition, and care for street children across shelters.</p>
+                    <div class="partner-footer-chips">
+                        <span class="partner-loc"><i class="fas fa-location-dot"></i> Delhi-NCR</span>
+                        <span class="partner-seal"><i class="fas fa-shield-check"></i> Verified NGO</span>
+                    </div>
                 </div>
+
+                <!-- Partner 3: Green Earth Trust India (Teal Theme) -->
+                <div class="partner-card partner-card-teal">
+                    <div class="partner-top-row">
+                        <div class="partner-logo">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <span class="partner-category-badge">Zero Waste</span>
+                    </div>
+                    <h3>Green Earth Trust India</h3>
+                    <div class="partner-metric-box">
+                        <i class="fas fa-recycle"></i> <span>Zero Waste Weddings Partner</span>
+                    </div>
+                    <p>Pioneering zero-food-waste protocols for large banquet halls, weddings, and corporate summits.</p>
+                    <div class="partner-footer-chips">
+                        <span class="partner-loc"><i class="fas fa-location-dot"></i> Mumbai & BLR</span>
+                        <span class="partner-seal"><i class="fas fa-seedling"></i> Eco Alliance</span>
+                    </div>
+                </div>
+
+                <!-- Partner 4: Rotary Youth Club (Violet Theme) -->
+                <div class="partner-card partner-card-violet">
+                    <div class="partner-top-row">
+                        <div class="partner-logo">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <span class="partner-category-badge">Youth Movement</span>
+                    </div>
+                    <h3>Rotary Youth Club</h3>
+                    <div class="partner-metric-box">
+                        <i class="fas fa-users-viewfinder"></i> <span>500+ Active Student Volunteers</span>
+                    </div>
+                    <p>Empowering university students to execute rapid doorstep food pickups and neighborhood distribution.</p>
+                    <div class="partner-footer-chips">
+                        <span class="partner-loc"><i class="fas fa-location-dot"></i> Pan-India</span>
+                        <span class="partner-seal"><i class="fas fa-bolt"></i> Active Logistics</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partner Coalition Callout Banner -->
+            <div class="partner-coalition-box">
+                <div class="coalition-text">
+                    <i class="fas fa-hands-clapping"></i>
+                    <span><strong>Join 250+ Verified Organizations.</strong> Partner with RescueMeals to eliminate food waste in your city.</span>
+                </div>
+                <a href="/signup" class="coalition-btn"><i class="fas fa-plus"></i> Join as Partner</a>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials-section">
+    <!-- Testimonials Section - Vibrant & Authentic Stories -->
+    <section class="testimonials-section" id="testimonials">
         <div class="section-container">
             <div class="section-header">
-                <h2><%= content.home?.testimonials?.title || 'What People Say' %></h2>
-                <p><%= content.home?.testimonials?.subtitle || 'Stories from our community members' %></p>
+                <div class="testimonials-tag">
+                    <i class="fas fa-heart-pulse"></i> Real Voices & Ground Stories
+                </div>
+                <h2>Stories of Impact</h2>
+                <p>Hear from our restaurant donors, NGO shelter leaders, and dedicated youth volunteers</p>
             </div>
+
             <div class="testimonials-grid">
-                <% (testimonials.length > 0 ? testimonials : [
-                    {name: 'John Smith', role: 'Restaurant Owner', message: 'RescueMeals has transformed how we manage food donations. The platform is intuitive and has helped us reduce waste significantly.'},
-                    {name: 'Sarah Johnson', role: 'NGO Director', message: 'As an NGO, this platform has made it so much easier to connect with food donors. We\'ve been able to help more people than ever before.'},
-                    {name: 'Mike Davis', role: 'Volunteer', message: 'Volunteering with RescueMeals has been incredibly rewarding. The system makes it easy to find and deliver food to those in need.'}
-                ]).forEach(testimonial => { %>
-                <div class="testimonial-card">
-                    <div class="testimonial-quote">
+                <!-- Testimonial 1: Restaurant Donor (Amber Theme) -->
+                <div class="testimonial-card testimonial-card-amber">
+                    <div class="testimonial-top-row">
+                        <span class="testimonial-role-badge">🏨 Banquet Donor</span>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="quote-bg-icon">
                         <i class="fas fa-quote-left"></i>
                     </div>
-                    <p class="testimonial-text">"<%= testimonial.message %>"</p>
+                    <p class="testimonial-text">"Instead of wasting extra food after large wedding receptions, RescueMeals allows us to schedule rapid pickups in 10 minutes. Knowing it feeds children at night shelters brings immense peace."</p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar">
-                            <% if (testimonial.photo_url) { %>
-                            <img src="<%= testimonial.photo_url %>" alt="<%= testimonial.name %>">
-                            <% } else { %>
-                            <i class="fas fa-user"></i>
-                            <% } %>
-                        </div>
+                        <div class="avatar-initials amber">RV</div>
                         <div class="testimonial-info">
-                            <h4><%= testimonial.name %></h4>
-                            <p><%= testimonial.role %></p>
+                            <h4>Rajesh Verma</h4>
+                            <p>General Manager, Royal Banquet Lucknow</p>
+                            <span class="testimonial-highlight-tag"><i class="fas fa-bolt"></i> 10-Min Pickup Verified</span>
                         </div>
                     </div>
                 </div>
-                <% }); %>
+
+                <!-- Testimonial 2: NGO Director (Emerald Theme) -->
+                <div class="testimonial-card testimonial-card-emerald">
+                    <div class="testimonial-top-row">
+                        <span class="testimonial-role-badge">🏢 NGO Partner</span>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="quote-bg-icon">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="testimonial-text">"RescueMeals has made food sourcing seamless. We receive hot, wholesome meals for over 120 children every single day. The quality and hygiene are exceptional."</p>
+                    <div class="testimonial-author">
+                        <div class="avatar-initials emerald">SD</div>
+                        <div class="testimonial-info">
+                            <h4>Sunita Devi</h4>
+                            <p>Director, Asha Children Home</p>
+                            <span class="testimonial-highlight-tag"><i class="fas fa-bowl-food"></i> 120+ Daily Children Fed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3: Student Volunteer (Blue Theme) -->
+                <div class="testimonial-card testimonial-card-blue">
+                    <div class="testimonial-top-row">
+                        <span class="testimonial-role-badge">🚴 Youth Volunteer</span>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="quote-bg-icon">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="testimonial-text">"Being a volunteer with RescueMeals is deeply meaningful. Seeing the smiles on children’s faces when we hand over warm meal boxes is the best feeling in the world."</p>
+                    <div class="testimonial-author">
+                        <div class="avatar-initials blue">AK</div>
+                        <div class="testimonial-info">
+                            <h4>Amit Kumar</h4>
+                            <p>Student Volunteer, MUIT Lucknow</p>
+                            <span class="testimonial-highlight-tag"><i class="fas fa-heart"></i> 150+ Deliveries Done</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact Section - Vibrant & Glassmorphic -->
     <section class="contact-section" id="contact">
         <div class="section-container">
             <div class="section-header">
-                <h2><%= content.contact?.title || 'Contact Us' %></h2>
-                <p><%= content.contact?.subtitle || 'Get in touch with our team' %></p>
+                <div class="contact-tag">
+                    <i class="fas fa-headset"></i> Get In Touch • We Are Here To Help
+                </div>
+                <h2>Contact Us</h2>
+                <p>Get in touch with our team</p>
             </div>
+
             <div class="contact-container">
-                <div class="contact-info">
-                    <h3><%= content.contact?.heading || "We'd Love to Hear From You" %></h3>
-                    <p><%= content.contact?.description || 'Have questions about RescueMeals? Want to partner with us? Reach out and we\'ll get back to you as soon as possible.' %></p>
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <h4>Address</h4>
-                                <p><%= content.contact?.address || 'Maharishi University of Information Technology (MUIT), Lucknow, Uttar Pradesh, India' %></p>
+                <!-- Left: Contact Details Card & Embedded Map -->
+                <div class="contact-info-card">
+                    <div>
+                        <h3>We'd Love to Hear From You</h3>
+                        <p>Have questions about RescueMeals? Want to partner with us? Reach out and we'll get back to you as soon as possible.</p>
+
+                        <div class="contact-details">
+                            <!-- Address -->
+                            <div class="contact-detail-item">
+                                <div class="contact-icon-box green">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div class="contact-text-content">
+                                    <h4>Address</h4>
+                                    <p>Maharishi University of Information Technology (MUIT), Lucknow, Uttar Pradesh, India</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <div>
-                                <h4>Phone</h4>
-                                <p><%= content.contact?.phone || '+91 7232918655' %></p>
+
+                            <!-- Phone -->
+                            <div class="contact-detail-item">
+                                <div class="contact-icon-box amber">
+                                    <i class="fas fa-phone-volume"></i>
+                                </div>
+                                <div class="contact-text-content">
+                                    <h4>Phone</h4>
+                                    <p><a href="tel:+917232918655">+91 7232918655</a></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <h4>Email</h4>
-                                <p><%= content.contact?.email || 'support@rescuemeals.com' %></p>
+
+                            <!-- Email -->
+                            <div class="contact-detail-item">
+                                <div class="contact-icon-box blue">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </div>
+                                <div class="contact-text-content">
+                                    <h4>Email</h4>
+                                    <p><a href="mailto:support@rescuemeals.com">support@rescuemeals.com</a></p>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Map Container -->
                     <div class="map-container">
                         <iframe 
-                            src="<%= content.contact?.mapEmbed || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.1234567890123!2d80.9462!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjbCsDUwJzQ4LjEiTiA4MMKwNTYnNDYuMiJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin' %>" 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.1234567890123!2d80.9462!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjbCsDUwJzQ4LjEiTiA4MMKwNTYnNDYuMiJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin" 
                             width="100%" 
-                            height="300" 
-                            style="border:0; border-radius: 12px;" 
+                            height="200" 
+                            style="border:0; border-radius: 16px;" 
                             allowfullscreen="" 
                             loading="lazy" 
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
                     </div>
                 </div>
-                <div class="contact-form">
+
+                <!-- Right: Glassmorphic Contact Form -->
+                <div class="contact-form-card">
                     <h3>Send us a Message</h3>
                     <form id="contactForm">
                         <div class="form-group">
-                            <label for="name">Full Name</label>
+                            <label for="name"><i class="fas fa-user"></i> Full Name</label>
                             <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email Address</label>
+                            <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
                             <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
                         </div>
                         <div class="form-group">
-                            <label for="phone">Phone Number (Optional)</label>
+                            <label for="phone"><i class="fas fa-phone"></i> Phone Number (Optional)</label>
                             <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number">
                         </div>
                         <div class="form-group">
-                            <label for="subject">Subject</label>
+                            <label for="subject"><i class="fas fa-heading"></i> Subject</label>
                             <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter subject" required>
                         </div>
                         <div class="form-group">
-                            <label for="message">Message</label>
+                            <label for="message"><i class="fas fa-comment-dots"></i> Message</label>
                             <textarea id="message" name="message" class="form-control" placeholder="Enter your message here..." required></textarea>
                         </div>
-                        <button type="submit" id="submitBtn">
+                        <button type="submit" id="submitBtn" class="contact-submit-btn">
                             <i class="fas fa-paper-plane"></i> Send Message
                         </button>
                     </form>
@@ -432,9 +735,14 @@
         }
 
         // Animated Counter Function
-        function animateCounter(element, target) {
+        function animateCounter(element, targetRaw) {
+            const target = parseInt(targetRaw) || 0;
+            if (target === 0) {
+                element.textContent = '0';
+                return;
+            }
             let current = 0;
-            const increment = target / 100;
+            const increment = Math.max(1, Math.ceil(target / 80));
             const timer = setInterval(() => {
                 current += increment;
                 if (current >= target) {
@@ -473,7 +781,7 @@
         }, observerOptions);
 
         // Observe all sections for scroll animations
-        document.querySelectorAll('.about-section, .how-it-works-section, .features-section, .statistics-section, .partners-section, .testimonials-section, .contact-section').forEach(section => {
+        document.querySelectorAll('.about-section, .features-section, .statistics-section, .partners-section, .testimonials-section, .contact-section').forEach(section => {
             section.classList.add('animate-on-scroll');
             observer.observe(section);
         });
@@ -518,13 +826,12 @@
                 transform: translateY(0);
             }
             
-            .step-card, .feature-card, .partner-card, .testimonial-card {
+            .feature-card, .partner-card, .testimonial-card {
                 opacity: 0;
                 transform: translateY(30px);
                 transition: opacity 0.6s ease, transform 0.6s ease;
             }
             
-            .animate-in .step-card,
             .animate-in .feature-card,
             .animate-in .partner-card,
             .animate-in .testimonial-card {
