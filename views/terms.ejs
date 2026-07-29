@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions - <%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %></title>
+    <meta name="description" content="Read the official Terms & Conditions of RescueMeals Food Redistribution Network.">
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <style>
+        .legal-header {
+            padding: 140px 20px 60px;
+            background: linear-gradient(135deg, #0A2E12 0%, #144919 50%, #0F3D1A 100%);
+            color: white;
+            text-align: center;
+        }
+        .legal-header h1 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .legal-container {
+            max-width: 900px;
+            margin: -40px auto 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 48px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            color: #1F2937;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        .legal-content p {
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+        .legal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            background: rgba(167, 243, 208, 0.2);
+            color: #A7F3D0;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('partials/navbar') %>
+
+    <!-- Header -->
+    <header class="legal-header">
+        <div class="legal-badge">
+            <i class="fas fa-file-contract"></i> Official Terms & Agreements
+        </div>
+        <h1>Terms & Conditions</h1>
+        <p>User responsibilities, food safety protocols, and platform guidelines</p>
+    </header>
+
+    <!-- Content Container -->
+    <div class="legal-container">
+        <div class="legal-content">
+            <% if (content.terms?.main?.text) { %>
+                <p><%= content.terms.main.text %></p>
+            <% } else { %>
+                <h3>1. Acceptance of Terms</h3>
+                <p>By accessing or utilizing the RescueMeals platform, food donors, NGO partners, and volunteers agree to abide by all platform rules, FSSAI hygiene guidelines, and food safety protocols.</p>
+                
+                <h3>2. Food Quality & Hygiene Guarantee</h3>
+                <p>Food donors certify that all surplus meals offered on the platform are fresh, untasted, wholesome, and stored under safe temperature conditions prior to volunteer pickup.</p>
+                
+                <h3>3. NGO Distribution & Non-Commercial Use</h3>
+                <p>Verified NGO partners agree that all food received through RescueMeals must be served free of charge to beneficiaries and must never be resold or monetized.</p>
+                
+                <h3>4. Volunteer Code of Conduct</h3>
+                <p>Volunteers undertake transportation with due diligence, maintaining thermal insulation and hygiene during transit from donor premises to NGO shelter hubs.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('partials/footer') %>
+</body>
+</html>

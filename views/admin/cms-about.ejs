@@ -2,7 +2,7 @@
 
 <div class="cms-card">
     <div class="cms-card-header">
-        <h2 class="cms-card-title">About Page Content</h2>
+        <h2 class="cms-card-title"><i class="fas fa-info-circle text-success me-2"></i>About Page Content</h2>
         <div class="cms-card-actions">
             <button class="cms-btn cms-btn-primary" onclick="saveAboutContent()">
                 <i class="fas fa-save"></i> Save Changes
@@ -12,28 +12,67 @@
 
     <form id="aboutForm">
         <div class="cms-form-group">
-            <label class="cms-form-label">Page Title</label>
-            <input type="text" class="cms-form-input" id="aboutTitle" placeholder="Enter page title">
+            <label class="cms-form-label">Page Title / Main Heading</label>
+            <input type="text" class="cms-form-input" id="aboutTitle" placeholder="e.g. About RescueMeals & Our Mission">
         </div>
 
         <div class="cms-form-group">
-            <label class="cms-form-label">Description</label>
-            <textarea class="cms-form-textarea" id="aboutDescription" placeholder="Enter page description"></textarea>
+            <label class="cms-form-label">Description / Overview</label>
+            <textarea class="cms-form-textarea" id="aboutDescription" placeholder="Enter main description of your NGO and rescue operations..."></textarea>
+        </div>
+
+        <div class="cms-form-row">
+            <div class="cms-form-group">
+                <label class="cms-form-label">Mission Statement</label>
+                <textarea class="cms-form-textarea" id="aboutMission" placeholder="Enter mission statement..."></textarea>
+            </div>
+
+            <div class="cms-form-group">
+                <label class="cms-form-label">Vision Statement</label>
+                <textarea class="cms-form-textarea" id="aboutVision" placeholder="Enter vision statement..."></textarea>
+            </div>
         </div>
 
         <div class="cms-form-group">
-            <label class="cms-form-label">Mission</label>
-            <textarea class="cms-form-textarea" id="aboutMission" placeholder="Enter mission statement"></textarea>
-        </div>
-
-        <div class="cms-form-group">
-            <label class="cms-form-label">Vision</label>
-            <textarea class="cms-form-textarea" id="aboutVision" placeholder="Enter vision statement"></textarea>
+            <label class="cms-form-label">About Section Image URL</label>
+            <input type="text" class="cms-form-input" id="aboutImage" placeholder="Enter image URL or upload below">
+            <input type="file" accept="image/*" class="cms-form-input" style="margin-top:8px;" onchange="uploadAboutImage(this)">
+            <img id="aboutImagePreview" class="cms-image-preview" alt="About preview">
         </div>
     </form>
 </div>
 
 <script>
+    function showAboutPreview(url) {
+        const preview = document.getElementById('aboutImagePreview');
+        if (url) {
+            preview.src = url;
+            preview.classList.add('show');
+        } else {
+            preview.classList.remove('show');
+        }
+    }
+
+    async function uploadAboutImage(input) {
+        const file = input.files[0];
+        if (!file) return;
+        try {
+            showToast('Uploading image...');
+            const formData = new FormData();
+            formData.append('image', file);
+            const res = await fetch('/api/cms/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Upload failed');
+            
+            document.getElementById('aboutImage').value = data.url;
+            showAboutPreview(data.url);
+            showToast('Image uploaded! Click Save Changes to apply.');
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            showToast(error.message || 'Error uploading image', 'error');
+        }
+    }
+
     async function loadAboutContent() {
         try {
             const response = await fetch('/api/cms/content/about/main');
@@ -44,6 +83,8 @@
                 document.getElementById('aboutDescription').value = data.content.description || '';
                 document.getElementById('aboutMission').value = data.content.mission || '';
                 document.getElementById('aboutVision').value = data.content.vision || '';
+                document.getElementById('aboutImage').value = data.content.image || '';
+                showAboutPreview(data.content.image || '');
             }
         } catch (error) {
             console.error('Error loading about content:', error);
@@ -55,7 +96,8 @@
             title: document.getElementById('aboutTitle').value,
             description: document.getElementById('aboutDescription').value,
             mission: document.getElementById('aboutMission').value,
-            vision: document.getElementById('aboutVision').value
+            vision: document.getElementById('aboutVision').value,
+            image: document.getElementById('aboutImage').value
         };
 
         try {
@@ -66,13 +108,13 @@
             });
 
             if (response.ok) {
-                showToast('About page saved successfully!');
+                showToast('About Page CMS saved successfully!');
             } else {
-                showToast('Error saving about page', 'error');
+                showToast('Error saving About Page CMS', 'error');
             }
         } catch (error) {
             console.error('Error saving about content:', error);
-            showToast('Error saving about page', 'error');
+            showToast('Error saving About Page CMS', 'error');
         }
     }
 

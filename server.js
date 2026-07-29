@@ -114,9 +114,17 @@ app.use(async (req, res, next) => {
             contentMap[item.page][item.section] = item.content;
         });
 
+        // Fetch gallery, faqs, and testimonials
+        const gallery = await Gallery.find().sort({ order: 1 });
+        const faqs = await FAQ.find({ is_active: true }).sort({ order: 1 });
+        const testimonials = await Testimonial.find({ is_active: true }).sort({ order: 1 });
+
         // Make data available to all views
         res.locals.settings = settings;
         res.locals.content = contentMap;
+        res.locals.gallery = gallery;
+        res.locals.faqs = faqs;
+        res.locals.testimonials = testimonials;
         res.locals.user = req.user || null;
 
         next();
@@ -124,6 +132,9 @@ app.use(async (req, res, next) => {
         console.error("Error in data middleware:", error);
         res.locals.settings = {};
         res.locals.content = {};
+        res.locals.gallery = [];
+        res.locals.faqs = [];
+        res.locals.testimonials = [];
         res.locals.user = req.user || null;
         next();
     }
@@ -215,6 +226,54 @@ app.get(["/gallery", "/Gallery"], async (req, res) => {
             settings: {},
             content: {},
             gallery: []
+        });
+    }
+});
+
+// Privacy Policy Page Route
+app.get("/privacy", async (req, res) => {
+    try {
+        let settings = await WebsiteSettings.findOne() || {};
+        const allContent = await WebsiteContent.find({});
+        const contentMap = {};
+        allContent.forEach(item => {
+            if (!contentMap[item.page]) contentMap[item.page] = {};
+            contentMap[item.page][item.section] = item.content;
+        });
+
+        res.render("privacy", {
+            settings,
+            content: contentMap
+        });
+    } catch (error) {
+        console.error("Error loading privacy page:", error);
+        res.render("privacy", {
+            settings: {},
+            content: {}
+        });
+    }
+});
+
+// Terms & Conditions Page Route
+app.get("/terms", async (req, res) => {
+    try {
+        let settings = await WebsiteSettings.findOne() || {};
+        const allContent = await WebsiteContent.find({});
+        const contentMap = {};
+        allContent.forEach(item => {
+            if (!contentMap[item.page]) contentMap[item.page] = {};
+            contentMap[item.page][item.section] = item.content;
+        });
+
+        res.render("terms", {
+            settings,
+            content: contentMap
+        });
+    } catch (error) {
+        console.error("Error loading terms page:", error);
+        res.render("terms", {
+            settings: {},
+            content: {}
         });
     }
 });

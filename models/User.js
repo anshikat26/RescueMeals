@@ -15,28 +15,43 @@ const UserSchema = new mongoose.Schema({
 
     password: {
         type: String,
-        required: true
+        required: false
     },
 
     institution: {
         type: String,
-        required: true
+        required: false,
+        default: "Individual"
     },
 
     role: {
         type: String,
         required: true,
-
         enum: [
             "NGO",
             "Restaurant",
             "Institution",
             "Volunteer",
             "Admin"
-        ]
+        ],
+        default: "Volunteer"
     },
 
-    
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+
+    facebookId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+
+    avatar: {
+        type: String
+    }
 
 });
 

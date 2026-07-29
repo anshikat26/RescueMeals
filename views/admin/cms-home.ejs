@@ -1,8 +1,9 @@
 <%- include('cms-dashboard', { pageTitle: 'Home Page CMS', activePage: 'home', user: user }) %>
 
+<!-- HERO SECTION CARD -->
 <div class="cms-card">
     <div class="cms-card-header">
-        <h2 class="cms-card-title">Hero Section</h2>
+        <h2 class="cms-card-title"><i class="fas fa-star text-success me-2"></i>Hero Section</h2>
         <div class="cms-card-actions">
             <button class="cms-btn cms-btn-primary" onclick="saveHeroSection()">
                 <i class="fas fa-save"></i> Save Changes
@@ -47,9 +48,10 @@
     </form>
 </div>
 
+<!-- STATISTICS CARD -->
 <div class="cms-card">
     <div class="cms-card-header">
-        <h2 class="cms-card-title">Statistics</h2>
+        <h2 class="cms-card-title"><i class="fas fa-chart-line text-success me-2"></i>Impact Statistics</h2>
         <div class="cms-card-actions">
             <button class="cms-btn cms-btn-primary" onclick="saveStatistics()">
                 <i class="fas fa-save"></i> Save Changes
@@ -60,28 +62,63 @@
     <form id="statsForm">
         <div class="cms-form-row">
             <div class="cms-form-group">
-                <label class="cms-form-label">Donations Count</label>
-                <input type="number" class="cms-form-input" id="statDonations" placeholder="Enter donations count">
+                <label class="cms-form-label">Meals Donated Count</label>
+                <input type="number" class="cms-form-input" id="statDonations" placeholder="e.g. 15000">
             </div>
             <div class="cms-form-group">
-                <label class="cms-form-label">NGOs Count</label>
-                <input type="number" class="cms-form-input" id="statNGOs" placeholder="Enter NGOs count">
+                <label class="cms-form-label">Partner NGOs Count</label>
+                <input type="number" class="cms-form-input" id="statNGOs" placeholder="e.g. 250">
             </div>
             <div class="cms-form-group">
-                <label class="cms-form-label">Volunteers Count</label>
-                <input type="number" class="cms-form-input" id="statVolunteers" placeholder="Enter volunteers count">
+                <label class="cms-form-label">Active Volunteers Count</label>
+                <input type="number" class="cms-form-input" id="statVolunteers" placeholder="e.g. 500">
             </div>
             <div class="cms-form-group">
                 <label class="cms-form-label">People Helped Count</label>
-                <input type="number" class="cms-form-input" id="statPeople" placeholder="Enter people helped count">
+                <input type="number" class="cms-form-input" id="statPeople" placeholder="e.g. 45000">
             </div>
         </div>
     </form>
 </div>
 
+<!-- ABOUT SECTION CARD -->
 <div class="cms-card">
     <div class="cms-card-header">
-        <h2 class="cms-card-title">Features</h2>
+        <h2 class="cms-card-title"><i class="fas fa-info-circle text-success me-2"></i>About Section</h2>
+        <div class="cms-card-actions">
+            <button class="cms-btn cms-btn-primary" onclick="saveAboutSection()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="aboutSectionForm">
+        <div class="cms-form-group">
+            <label class="cms-form-label">About Heading</label>
+            <input type="text" class="cms-form-input" id="aboutHeading" placeholder="e.g. Making a Difference Together Every Day">
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Description Paragraph 1</label>
+            <textarea class="cms-form-textarea" id="aboutDesc1" placeholder="First paragraph about RescueMeals mission..."></textarea>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">Description Paragraph 2</label>
+            <textarea class="cms-form-textarea" id="aboutDesc2" placeholder="Second paragraph about safety & food rescue..."></textarea>
+        </div>
+
+        <div class="cms-form-group">
+            <label class="cms-form-label">About Image URL</label>
+            <input type="text" class="cms-form-input" id="aboutImage" placeholder="Image URL for about section">
+        </div>
+    </form>
+</div>
+
+<!-- FEATURES CARD -->
+<div class="cms-card">
+    <div class="cms-card-header">
+        <h2 class="cms-card-title"><i class="fas fa-list text-success me-2"></i>Features & Bento Highlights</h2>
         <div class="cms-card-actions">
             <button class="cms-btn cms-btn-primary" onclick="saveFeatures()">
                 <i class="fas fa-save"></i> Save Changes
@@ -91,7 +128,7 @@
 
     <form id="featuresForm">
         <div id="featuresContainer">
-            <!-- Features will be dynamically added here -->
+            <!-- Dynamic features list -->
         </div>
         <button type="button" class="cms-btn cms-btn-secondary cms-btn-sm" onclick="addFeature()">
             <i class="fas fa-plus"></i> Add Feature
@@ -100,6 +137,19 @@
 </div>
 
 <script>
+    // Global image upload helper
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        const res = await fetch('/api/cms/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Upload failed');
+        return data.url;
+    }
+
     // Hero image upload
     function showHeroPreview(url) {
         const preview = document.getElementById('heroImagePreview');
@@ -219,6 +269,50 @@
         }
     }
 
+    // Load About section
+    async function loadAboutSection() {
+        try {
+            const response = await fetch('/api/cms/content/home/about');
+            const data = await response.json();
+
+            if (data.content) {
+                document.getElementById('aboutHeading').value = data.content.heading || '';
+                document.getElementById('aboutDesc1').value = data.content.description1 || '';
+                document.getElementById('aboutDesc2').value = data.content.description2 || '';
+                document.getElementById('aboutImage').value = data.content.image || '';
+            }
+        } catch (error) {
+            console.error('Error loading about section:', error);
+        }
+    }
+
+    // Save About section
+    async function saveAboutSection() {
+        const content = {
+            heading: document.getElementById('aboutHeading').value,
+            description1: document.getElementById('aboutDesc1').value,
+            description2: document.getElementById('aboutDesc2').value,
+            image: document.getElementById('aboutImage').value
+        };
+
+        try {
+            const response = await fetch('/api/cms/content/home/about', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(content)
+            });
+
+            if (response.ok) {
+                showToast('About section saved successfully!');
+            } else {
+                showToast('Error saving about section', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving about section:', error);
+            showToast('Error saving about section', 'error');
+        }
+    }
+
     // Load features
     async function loadFeatures() {
         try {
@@ -228,7 +322,6 @@
             if (data.content && data.content.features) {
                 const container = document.getElementById('featuresContainer');
                 container.innerHTML = '';
-
                 data.content.features.forEach((feature) => {
                     addFeature(feature.title, feature.description, feature.icon);
                 });
@@ -238,7 +331,7 @@
         }
     }
 
-    // Add feature input
+    // Add feature item
     function addFeature(title = '', description = '', icon = '') {
         const container = document.getElementById('featuresContainer');
         const featureDiv = document.createElement('div');
@@ -253,8 +346,8 @@
                 <input type="text" class="cms-form-input feature-description" value="${description}" placeholder="Enter feature description">
             </div>
             <div class="cms-form-group">
-                <label class="cms-form-label">Icon Class</label>
-                <input type="text" class="cms-form-input feature-icon" value="${icon}" placeholder="Enter Font Awesome icon class">
+                <label class="cms-form-label">Icon Class (Font Awesome)</label>
+                <input type="text" class="cms-form-input feature-icon" value="${icon}" placeholder="e.g. fas fa-leaf">
             </div>
             <div class="cms-form-group">
                 <label class="cms-form-label">&nbsp;</label>
@@ -266,12 +359,10 @@
         container.appendChild(featureDiv);
     }
 
-    // Remove feature
     function removeFeature(button) {
         button.closest('.feature-item').remove();
     }
 
-    // Save features
     async function saveFeatures() {
         const features = [];
         document.querySelectorAll('.feature-item').forEach(item => {
@@ -300,10 +391,11 @@
         }
     }
 
-    // Load all data on page load
+    // Load all sections on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadHeroSection();
         loadStatistics();
+        loadAboutSection();
         loadFeatures();
     });
 </script>

@@ -8,16 +8,28 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
     font-family: 'Poppins', sans-serif;
     background: #f8fafc;
     color: #111827;
+    overflow-x: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera globally */
+::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
 }
 
 /* CMS Dashboard Layout */
 .cms-dashboard {
     display: flex;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* Sidebar */
@@ -581,39 +593,25 @@ body {
     }
 }
 
-/* Scrollbar Styling */
-.cms-sidebar::-webkit-scrollbar {
-    width: 6px;
+/* Hidden Scrollbars */
+.cms-sidebar,
+.cms-nav,
+.cms-main,
+.cms-content,
+.cms-table-container {
+    overflow-x: hidden !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
 }
 
-.cms-sidebar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.cms-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-}
-
-.cms-sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.cms-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.cms-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.cms-content::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 10px;
-}
-
-.cms-content::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
+.cms-sidebar::-webkit-scrollbar,
+.cms-nav::-webkit-scrollbar,
+.cms-main::-webkit-scrollbar,
+.cms-content::-webkit-scrollbar,
+.cms-table-container::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 /* ==========================

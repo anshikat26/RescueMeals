@@ -77,7 +77,26 @@
 
             <!-- Photo & Media Grid -->
             <div class="gallery-grid" id="galleryGrid">
-                <!-- Gallery Item 1: Food Drive -->
+                <% if (typeof gallery !== 'undefined' && gallery && gallery.length > 0) { %>
+                    <% gallery.forEach(item => { %>
+                        <div class="gallery-card" data-category="drives">
+                            <div class="gallery-img-wrapper">
+                                <img src="<%= item.image_url %>" alt="<%= item.alt_text || item.title %>" class="gallery-img">
+                                <div class="gallery-overlay">
+                                    <span class="gallery-cat-badge emerald"><i class="fas fa-camera"></i> Ground Drive</span>
+                                    <button class="gallery-zoom-btn" onclick="openLightbox('<%= item.image_url %>', '<%= item.title %>')"><i class="fas fa-expand"></i> Expand</button>
+                                </div>
+                            </div>
+                            <div class="gallery-info">
+                                <h3><%= item.title %></h3>
+                                <p><%= item.alt_text || 'Food rescue & community meal distribution drive.' %></p>
+                                <span class="gallery-date"><i class="far fa-calendar-alt"></i> Verified Drive</span>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } %>
+
+                <!-- Default Gallery Item 1: Food Drive -->
                 <div class="gallery-card" data-category="drives">
                     <div class="gallery-img-wrapper">
                         <img src="/images/hero-ngo-bg.jpg" alt="Lucknow Night Shelter Food Drive" class="gallery-img">
@@ -93,7 +112,7 @@
                     </div>
                 </div>
 
-                <!-- Gallery Item 2: Children Impact -->
+                <!-- Default Gallery Item 2: Children Impact -->
                 <div class="gallery-card" data-category="children">
                     <div class="gallery-img-wrapper">
                         <img src="/images/indian-children-meals.jpg" alt="Asha Shelter Home Children Meal Time" class="gallery-img">
@@ -109,7 +128,7 @@
                     </div>
                 </div>
 
-                <!-- Gallery Item 3: Volunteer Drive -->
+                <!-- Default Gallery Item 3: Volunteer Drive -->
                 <div class="gallery-card" data-category="volunteers">
                     <div class="gallery-img-wrapper">
                         <img src="/images/volunteer-food-drive.jpg" alt="Youth Volunteer Doorstep Handover" class="gallery-img">
@@ -122,22 +141,6 @@
                         <h3>Student Volunteer Rapid Logistics</h3>
                         <p>Dedicated youth volunteers picking up sealed food boxes from Royal Banquet in under 25 mins.</p>
                         <span class="gallery-date"><i class="far fa-calendar-alt"></i> Pan-India Fleet</span>
-                    </div>
-                </div>
-
-                <!-- Gallery Item 4: Tech & Workflow -->
-                <div class="gallery-card" data-category="drives">
-                    <div class="gallery-img-wrapper">
-                        <img src="/images/app-workflow.jpg" alt="RescueMeals Digital Redistribution Diagram" class="gallery-img">
-                        <div class="gallery-overlay">
-                            <span class="gallery-cat-badge teal"><i class="fas fa-diagram-project"></i> Infrastructure</span>
-                            <button class="gallery-zoom-btn" onclick="openLightbox('/images/app-workflow.jpg', 'RescueMeals Digital Redistribution Diagram')"><i class="fas fa-expand"></i> Expand</button>
-                        </div>
-                    </div>
-                    <div class="gallery-info">
-                        <h3>Digital Redistribution System</h3>
-                        <p>Real-time matching workflow connecting surplus food to local non-profit shelters.</p>
-                        <span class="gallery-date"><i class="far fa-calendar-alt"></i> Tech Infrastructure</span>
                     </div>
                 </div>
             </div>

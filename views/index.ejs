@@ -4,7 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= settings.seo_title || 'RescueMeals - Waste Food Management System' %></title>
+    <title><%= settings.seo_title || (settings.website_name ? settings.website_name + ' - Reduce Food Waste, Feed Lives' : 'RescueMeals - Waste Food Management System') %></title>
+    <meta name="description" content="<%= settings.seo_description || 'RescueMeals connects restaurants, institutions, and individuals with local NGOs and volunteers to reduce food waste.' %>">
+    <% if (settings.meta_keywords && settings.meta_keywords.length > 0) { %>
+    <meta name="keywords" content="<%= Array.isArray(settings.meta_keywords) ? settings.meta_keywords.join(', ') : settings.meta_keywords %>">
+    <% } %>
+    
+    <% if (settings.primary_color) { %>
+    <style>
+        :root {
+            --primary-green: <%= settings.primary_color %> !important;
+            --emerald-main: <%= settings.primary_color %> !important;
+            --secondary-green: <%= settings.secondary_color || '#22C55E' %> !important;
+            --mint-light: <%= settings.secondary_color || '#22C55E' %> !important;
+        }
+    </style>
+    <% } %>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,9 +82,6 @@
                     <a href="/signup" class="hero-btn hero-btn-amber">
                         <i class="fas fa-hand-holding-heart"></i> Donate Food Now
                     </a>
-                    <a href="/signup" class="hero-btn hero-btn-primary">
-                        <i class="fas fa-user-plus"></i> Get Started
-                    </a>
                     <a href="/login" class="hero-btn hero-btn-secondary">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </a>
@@ -96,17 +108,31 @@
     <section class="about-section" id="about">
         <div class="section-container">
             <div class="section-header">
-                <h2><%= content.home?.about?.title || 'About RescueMeals India' %></h2>
-                <p><%= content.home?.about?.subtitle || 'Connecting restaurants, banquet halls, and corporate canteens with verified NGOs and youth volunteers across India.' %></p>
+                <h2><%= content.about?.main?.title || content.home?.about?.title || 'About RescueMeals' %></h2>
+                <p><%= content.about?.main?.description || content.home?.about?.subtitle || 'Connecting restaurants, banquet halls, and corporate canteens with verified NGOs and youth volunteers.' %></p>
             </div>
             <div class="about-content">
                 <div class="about-image">
-                    <img src="<%= content.home?.about?.image || '/images/indian-children-meals.jpg' %>" alt="Indian Children Food Donation Drive">
+                    <img src="<%= content.about?.main?.image || content.home?.about?.image || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800' %>" alt="Food Rescue Community">
                 </div>
                 <div class="about-text">
-                    <h3><%= content.home?.about?.heading || 'Nourishing Children & Eliminating Food Wastage' %></h3>
-                    <p><%= content.home?.about?.description1 || 'RescueMeals is an authentic tech-driven food redistribution network dedicated to rescuing surplus, hygienic food from wedding halls, hotels, and college campuses across Indian cities.' %></p>
-                    <p><%= content.home?.about?.description2 || 'Our mission aligns with the Zero Hunger Initiative—ensuring every extra meal is safely quality-tested and delivered to children at shelter homes, night care centers, and slum community schools.' %></p>
+                    <h3><%= content.about?.main?.title || content.home?.about?.heading || 'Nourishing Communities & Eliminating Food Wastage' %></h3>
+                    <p><%= content.about?.main?.description || content.home?.about?.description1 || 'RescueMeals is a tech-driven food redistribution network dedicated to rescuing surplus, hygienic food from wedding halls, hotels, and campuses.' %></p>
+                    
+                    <% if (content.about?.main?.mission || content.home?.about?.description2) { %>
+                    <div class="about-mission-box p-3 mb-3 border-start border-success border-4 bg-light rounded">
+                        <strong class="text-success"><i class="fas fa-bullseye me-1"></i> Our Mission:</strong>
+                        <p class="mb-0 mt-1"><%= content.about?.main?.mission || content.home?.about?.description2 %></p>
+                    </div>
+                    <% } %>
+
+                    <% if (content.about?.main?.vision) { %>
+                    <div class="about-vision-box p-3 mb-3 border-start border-primary border-4 bg-light rounded">
+                        <strong class="text-primary"><i class="fas fa-eye me-1"></i> Our Vision:</strong>
+                        <p class="mb-0 mt-1"><%= content.about?.main?.vision %></p>
+                    </div>
+                    <% } %>
+
                     <div class="about-features">
                         <% const features = content.home?.about?.features || [
                             {icon: 'fa-child', text: 'Daily Meals for School Children'},
@@ -513,74 +539,126 @@
             </div>
 
             <div class="testimonials-grid">
-                <!-- Testimonial 1: Restaurant Donor (Amber Theme) -->
-                <div class="testimonial-card testimonial-card-amber">
-                    <div class="testimonial-top-row">
-                        <span class="testimonial-role-badge">🏨 Banquet Donor</span>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <% if (typeof testimonials !== 'undefined' && testimonials && testimonials.length > 0) { %>
+                    <% testimonials.forEach(t => { %>
+                        <div class="testimonial-card testimonial-card-emerald">
+                            <div class="testimonial-top-row">
+                                <span class="testimonial-role-badge"><i class="fas fa-user-check me-1"></i> <%= t.role || 'Community Hero' %></span>
+                                <div class="testimonial-rating">
+                                    <% for (let i = 0; i < (t.rating || 5); i++) { %>
+                                        <i class="fas fa-star"></i>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="quote-bg-icon">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <p class="testimonial-text">"<%= t.message %>"</p>
+                            <div class="testimonial-author">
+                                <% if (t.photo_url) { %>
+                                    <img src="<%= t.photo_url %>" alt="<%= t.name %>" style="width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 2px solid #10B981; margin-right: 12px;">
+                                <% } else { %>
+                                    <div class="avatar-initials emerald"><%= t.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() %></div>
+                                <% } %>
+                                <div class="testimonial-info">
+                                    <h4><%= t.name %></h4>
+                                    <p><%= t.role || 'RescueMeals Community Member' %></p>
+                                    <span class="testimonial-highlight-tag"><i class="fas fa-check-circle"></i> Verified Testimonial</span>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <!-- Testimonial 1: Restaurant Donor (Amber Theme) -->
+                    <div class="testimonial-card testimonial-card-amber">
+                        <div class="testimonial-top-row">
+                            <span class="testimonial-role-badge">Banquet Donor</span>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="quote-bg-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-text">"Instead of wasting extra food after large wedding receptions, RescueMeals allows us to schedule rapid pickups in 10 minutes. Knowing it feeds children at night shelters brings immense peace."</p>
+                        <div class="testimonial-author">
+                            <div class="avatar-initials amber">RV</div>
+                            <div class="testimonial-info">
+                                <h4>Rajesh Verma</h4>
+                                <p>General Manager, Royal Banquet Lucknow</p>
+                                <span class="testimonial-highlight-tag"><i class="fas fa-bolt"></i> 10-Min Pickup Verified</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="quote-bg-icon">
-                        <i class="fas fa-quote-left"></i>
-                    </div>
-                    <p class="testimonial-text">"Instead of wasting extra food after large wedding receptions, RescueMeals allows us to schedule rapid pickups in 10 minutes. Knowing it feeds children at night shelters brings immense peace."</p>
-                    <div class="testimonial-author">
-                        <div class="avatar-initials amber">RV</div>
-                        <div class="testimonial-info">
-                            <h4>Rajesh Verma</h4>
-                            <p>General Manager, Royal Banquet Lucknow</p>
-                            <span class="testimonial-highlight-tag"><i class="fas fa-bolt"></i> 10-Min Pickup Verified</span>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Testimonial 2: NGO Director (Emerald Theme) -->
-                <div class="testimonial-card testimonial-card-emerald">
-                    <div class="testimonial-top-row">
-                        <span class="testimonial-role-badge">🏢 NGO Partner</span>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <!-- Testimonial 2: NGO Director (Emerald Theme) -->
+                    <div class="testimonial-card testimonial-card-emerald">
+                        <div class="testimonial-top-row">
+                            <span class="testimonial-role-badge">NGO Partner</span>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="quote-bg-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-text">"RescueMeals has made food sourcing seamless. We receive hot, wholesome meals for over 120 children every single day. The quality and hygiene are exceptional."</p>
+                        <div class="testimonial-author">
+                            <div class="avatar-initials emerald">SD</div>
+                            <div class="testimonial-info">
+                                <h4>Sunita Devi</h4>
+                                <p>Director, Asha Children Home</p>
+                                <span class="testimonial-highlight-tag"><i class="fas fa-bowl-food"></i> 120+ Daily Children Fed</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="quote-bg-icon">
-                        <i class="fas fa-quote-left"></i>
-                    </div>
-                    <p class="testimonial-text">"RescueMeals has made food sourcing seamless. We receive hot, wholesome meals for over 120 children every single day. The quality and hygiene are exceptional."</p>
-                    <div class="testimonial-author">
-                        <div class="avatar-initials emerald">SD</div>
-                        <div class="testimonial-info">
-                            <h4>Sunita Devi</h4>
-                            <p>Director, Asha Children Home</p>
-                            <span class="testimonial-highlight-tag"><i class="fas fa-bowl-food"></i> 120+ Daily Children Fed</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 3: Student Volunteer (Blue Theme) -->
-                <div class="testimonial-card testimonial-card-blue">
-                    <div class="testimonial-top-row">
-                        <span class="testimonial-role-badge">🚴 Youth Volunteer</span>
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="quote-bg-icon">
-                        <i class="fas fa-quote-left"></i>
-                    </div>
-                    <p class="testimonial-text">"Being a volunteer with RescueMeals is deeply meaningful. Seeing the smiles on children’s faces when we hand over warm meal boxes is the best feeling in the world."</p>
-                    <div class="testimonial-author">
-                        <div class="avatar-initials blue">AK</div>
-                        <div class="testimonial-info">
-                            <h4>Amit Kumar</h4>
-                            <p>Student Volunteer, MUIT Lucknow</p>
-                            <span class="testimonial-highlight-tag"><i class="fas fa-heart"></i> 150+ Deliveries Done</span>
-                        </div>
-                    </div>
-                </div>
+                <% } %>
             </div>
         </div>
     </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq" style="padding: 80px 20px; background: rgba(255,255,255,0.4); backdrop-filter: blur(10px);">
+        <div class="section-container" style="max-width: 900px; margin: 0 auto;">
+            <div class="section-header" style="text-align: center; margin-bottom: 48px;">
+                <div class="testimonials-tag" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 9999px; background: rgba(16, 185, 129, 0.1); color: #059669; font-size: 14px; font-weight: 600; margin-bottom: 12px;">
+                    <i class="fas fa-question-circle"></i> Got Questions? We Have Answers
+                </div>
+                <h2 style="font-size: 36px; font-weight: 800; color: #064E3B; margin-bottom: 12px;">Frequently Asked Questions</h2>
+                <p style="font-size: 16px; color: #4B5563;">Find answers to common questions about food donation, safety, NGO partnerships, and volunteering.</p>
+            </div>
+
+            <div class="faq-accordion" id="faqAccordion">
+                <% if (typeof faqs !== 'undefined' && faqs && faqs.length > 0) { %>
+                    <% faqs.forEach((faq, index) => { %>
+                        <div class="faq-item" style="background: white; border-radius: 16px; padding: 20px 24px; margin-bottom: 16px; border: 1px solid rgba(16, 185, 129, 0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: all 0.3s ease;">
+                            <div class="faq-question" onclick="this.nextElementSibling.classList.toggle('show'); this.querySelector('.faq-icon').classList.toggle('rotate');" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 700; font-size: 18px; color: #064E3B;">
+                                <span><i class="fas fa-circle-question text-success me-2" style="color: #10B981; margin-right: 8px;"></i> <%= faq.question %></span>
+                                <i class="fas fa-chevron-down faq-icon" style="transition: transform 0.3s ease; color: #10B981;"></i>
+                            </div>
+                            <div class="faq-answer" style="display: none; padding-top: 14px; color: #4B5563; font-size: 15.5px; line-height: 1.6; border-top: 1px dashed #E5E7EB; margin-top: 14px;">
+                                <p style="margin: 0;"><%= faq.answer %></p>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="faq-item" style="background: white; border-radius: 16px; padding: 20px 24px; margin-bottom: 16px; border: 1px solid rgba(16, 185, 129, 0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                        <div class="faq-question" onclick="this.nextElementSibling.classList.toggle('show'); this.querySelector('.faq-icon').classList.toggle('rotate');" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 700; font-size: 18px; color: #064E3B;">
+                            <span><i class="fas fa-circle-question text-success me-2" style="color: #10B981; margin-right: 8px;"></i> How does RescueMeals rescue surplus food?</span>
+                            <i class="fas fa-chevron-down faq-icon" style="transition: transform 0.3s ease; color: #10B981;"></i>
+                        </div>
+                        <div class="faq-answer" style="display: none; padding-top: 14px; color: #4B5563; font-size: 15.5px; line-height: 1.6; border-top: 1px dashed #E5E7EB; margin-top: 14px;">
+                            <p style="margin: 0;">Food donors (restaurants, wedding halls, individuals) post available surplus food on our platform. Nearest verified NGOs and youth volunteers receive instant notifications to pick up and distribute the food safely.</p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+    <style>
+        .faq-answer.show { display: block !important; }
+        .faq-icon.rotate { transform: rotate(180deg); }
+    </style>
 
     <!-- Contact Section - Vibrant & Glassmorphic -->
     <section class="contact-section" id="contact">
@@ -608,7 +686,7 @@
                                 </div>
                                 <div class="contact-text-content">
                                     <h4>Address</h4>
-                                    <p>Maharishi University of Information Technology (MUIT), Lucknow, Uttar Pradesh, India</p>
+                                    <p><%= content.contact?.main?.address || 'Maharishi University of Information Technology (MUIT), Lucknow, Uttar Pradesh, India' %></p>
                                 </div>
                             </div>
 
@@ -619,7 +697,7 @@
                                 </div>
                                 <div class="contact-text-content">
                                     <h4>Phone</h4>
-                                    <p><a href="tel:+917232918655">+91 7232918655</a></p>
+                                    <p><a href="tel:<%= content.contact?.main?.phone || '+917232918655' %>"><%= content.contact?.main?.phone || '+91 7232918655' %></a></p>
                                 </div>
                             </div>
 
@@ -630,16 +708,29 @@
                                 </div>
                                 <div class="contact-text-content">
                                     <h4>Email</h4>
-                                    <p><a href="mailto:support@rescuemeals.com">support@rescuemeals.com</a></p>
+                                    <p><a href="mailto:<%= content.contact?.main?.email || 'support@rescuemeals.com' %>"><%= content.contact?.main?.email || 'support@rescuemeals.com' %></a></p>
                                 </div>
                             </div>
+
+                            <!-- Working Hours -->
+                            <% if (content.contact?.main?.hours) { %>
+                            <div class="contact-detail-item">
+                                <div class="contact-icon-box green">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="contact-text-content">
+                                    <h4>Working Hours</h4>
+                                    <p><%= content.contact?.main?.hours %></p>
+                                </div>
+                            </div>
+                            <% } %>
                         </div>
                     </div>
 
                     <!-- Map Container -->
                     <div class="map-container">
                         <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.1234567890123!2d80.9462!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjbCsDUwJzQ4LjEiTiA4MMKwNTYnNDYuMiJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin" 
+                            src="<%= content.contact?.main?.map || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.1234567890123!2d80.9462!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjbCsDUwJzQ4LjEiTiA4MMKwNTYnNDYuMiJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin' %>" 
                             width="100%" 
                             height="200" 
                             style="border:0; border-radius: 16px;" 

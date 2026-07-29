@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - <%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %></title>
+    <meta name="description" content="Read the official Privacy Policy of RescueMeals Food Redistribution Network.">
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <style>
+        .legal-header {
+            padding: 140px 20px 60px;
+            background: linear-gradient(135deg, #0A2E12 0%, #144919 50%, #0F3D1A 100%);
+            color: white;
+            text-align: center;
+        }
+        .legal-header h1 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .legal-container {
+            max-width: 900px;
+            margin: -40px auto 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 48px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            color: #1F2937;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        .legal-content p {
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+        .legal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            background: rgba(167, 243, 208, 0.2);
+            color: #A7F3D0;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('partials/navbar') %>
+
+    <!-- Header -->
+    <header class="legal-header">
+        <div class="legal-badge">
+            <i class="fas fa-shield-halved"></i> Official Legal Policy
+        </div>
+        <h1>Privacy Policy</h1>
+        <p>Transparency, security, and data protection at RescueMeals</p>
+    </header>
+
+    <!-- Content Container -->
+    <div class="legal-container">
+        <div class="legal-content">
+            <% if (content.privacy?.main?.text) { %>
+                <p><%= content.privacy.main.text %></p>
+            <% } else { %>
+                <h3>1. Introduction</h3>
+                <p>Welcome to RescueMeals. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice or our practices with regard to your personal information, please contact us at support@rescuemeals.com.</p>
+                
+                <h3>2. Information We Collect</h3>
+                <p>We collect personal information that you voluntarily provide to us when you register on the platform, express an interest in obtaining information about us or our services, when you participate in activities on the platform, or otherwise when you contact us.</p>
+                
+                <h3>3. How We Use Your Information</h3>
+                <p>We use personal information collected via our platform for a variety of business purposes described below. We process your personal information for these purposes in reliance on our legitimate business interests, in order to enter into or perform a contract with you, with your consent, and/or for compliance with our legal obligations.</p>
+                
+                <h3>4. Food Rescue Logistics & Safety</h3>
+                <p>Location data shared by food donors and volunteers is strictly utilized to optimize route matching, ensure food hygiene compliance, and fulfill 30-minute rapid pickup targets.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('partials/footer') %>
+</body>
+</html>

@@ -26,7 +26,7 @@
                     <span class="footer-logo-text"><%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %><span class="logo-dot">.</span></span>
                 </a>
                 <p>
-                    <%= content.footer?.about || 'RescueMeals is India’s leading digital food rescue platform, bridging surplus food from hotels, weddings, and caterers to verified shelters and children in need.' %>
+                    <%= content.footer?.main?.description || content.footer?.about || 'Connecting food donors with NGOs and volunteers to reduce food wastage and support communities in need. Together, we can make a difference.' %>
                 </p>
                 <div class="footer-badges">
                     <span class="footer-badge-chip"><i class="fas fa-shield-check"></i> FSSAI Compliant</span>
@@ -45,12 +45,22 @@
             <div class="footer-links">
                 <h4>Quick Navigation</h4>
                 <ul>
-                    <li><a href="/#home"><i class="fas fa-chevron-right"></i> Home</a></li>
-                    <li><a href="/#about"><i class="fas fa-chevron-right"></i> About Us</a></li>
-                    <li><a href="/#features"><i class="fas fa-chevron-right"></i> Features</a></li>
-                    <li><a href="/gallery"><i class="fas fa-chevron-right"></i> Impact Gallery</a></li>
-                    <li><a href="/#testimonials"><i class="fas fa-chevron-right"></i> Stories of Impact</a></li>
-                    <li><a href="/#contact"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                    <% if (content.footer?.main?.links) { %>
+                        <% const rawLinks = content.footer.main.links.split(','); %>
+                        <% rawLinks.forEach(linkText => { %>
+                            <% const trimmed = linkText.trim(); %>
+                            <% if (trimmed) { %>
+                                <% const lower = trimmed.toLowerCase(); %>
+                                <% const targetUrl = lower.includes('home') ? '/#home' : lower.includes('about') ? '/#about' : lower.includes('how') ? '/#how-it-works' : lower.includes('contact') ? '/#contact' : '/#home'; %>
+                                <li><a href="<%= targetUrl %>"><i class="fas fa-chevron-right"></i> <%= trimmed %></a></li>
+                            <% } %>
+                        <% }); %>
+                    <% } else { %>
+                        <li><a href="/#home"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="/#about"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="/#how-it-works"><i class="fas fa-chevron-right"></i> How It Works</a></li>
+                        <li><a href="/#contact"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                    <% } %>
                 </ul>
             </div>
 
@@ -73,19 +83,19 @@
                     <div class="contact-mini-icon green">
                         <i class="fas fa-location-dot"></i>
                     </div>
-                    <span><%= content.footer?.address || 'Maharishi University of Information Technology (MUIT), Lucknow, Uttar Pradesh, India' %></span>
+                    <span><%= content.contact?.main?.address || content.footer?.address || 'Maharishi University of Information Technology (MUIT), Lucknow, Uttar Pradesh, India' %></span>
                 </div>
                 <div class="footer-contact-item">
                     <div class="contact-mini-icon amber">
                         <i class="fas fa-phone-volume"></i>
                     </div>
-                    <span><a href="tel:+917232918655" style="color: inherit; text-decoration: none;"><%= content.footer?.phone || '+91 7232918655' %></a></span>
+                    <span><a href="tel:<%= content.contact?.main?.phone || '+917232918655' %>" style="color: inherit; text-decoration: none;"><%= content.contact?.main?.phone || content.footer?.phone || '+91 7232918655' %></a></span>
                 </div>
                 <div class="footer-contact-item">
                     <div class="contact-mini-icon blue">
                         <i class="fas fa-envelope-open-text"></i>
                     </div>
-                    <span><a href="mailto:support@rescuemeals.com" style="color: inherit; text-decoration: none;"><%= content.footer?.email || 'support@rescuemeals.com' %></a></span>
+                    <span><a href="mailto:<%= content.contact?.main?.email || 'support@rescuemeals.com' %>" style="color: inherit; text-decoration: none;"><%= content.contact?.main?.email || content.footer?.email || 'support@rescuemeals.com' %></a></span>
                 </div>
             </div>
         </div>
@@ -93,8 +103,16 @@
         <!-- Footer Bottom Bar -->
         <div class="footer-bottom">
             <p>
-                &copy; <%= new Date().getFullYear() %> <%= typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals' %>. All rights reserved. Made with <i class="fas fa-heart" style="color: #EF4444;"></i> for Zero Hunger in India.
+                <%= content.footer?.main?.copyright || ('© ' + new Date().getFullYear() + ' ' + (typeof settings !== 'undefined' ? (settings.website_name || 'RescueMeals') : 'RescueMeals') + '. All rights reserved. | Privacy Policy | Terms of Service') %>
             </p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <span>•</span>
+                <a href="#">Terms of Service</a>
+                <span>•</span>
+                <a href="#">FSSAI Guidelines</a>
+            </div>
+        </div>
             <div class="footer-bottom-links">
                 <a href="#">Privacy Policy</a>
                 <span>•</span>

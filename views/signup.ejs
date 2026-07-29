@@ -19,6 +19,7 @@
 </head>
 
 <body>
+<%- include('partials/navbar') %>
 <div class="signup-container">
     <!-- Left Side - Hero Section -->
     <div class="signup-hero">
@@ -184,14 +185,11 @@
 
             <div class="social-login">
                 <div class="social-buttons">
-                    <a href="#" class="social-btn google" aria-label="Sign up with Google">
+                    <a href="/auth/google" class="social-btn google" aria-label="Sign up with Google">
                         <i class="fab fa-google"></i>
                     </a>
-                    <a href="#" class="social-btn facebook" aria-label="Sign up with Facebook">
+                    <a href="/auth/facebook" class="social-btn facebook" aria-label="Sign up with Facebook">
                         <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="social-btn twitter" aria-label="Sign up with Twitter">
-                        <i class="fab fa-twitter"></i>
                     </a>
                 </div>
             </div>
