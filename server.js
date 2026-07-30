@@ -303,7 +303,13 @@ app.get("/admin/cms/:page", checkRole(["Admin"]), (req, res) => {
 });
 
 
-// Server
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
-});
+// Export app
+module.exports = app;
+
+// Server start for local development
+if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
