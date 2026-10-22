@@ -48,6 +48,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 app.use(session({
     secret: "rescumealssecret",
@@ -63,10 +64,10 @@ app.use(flash());
 // Function to seed default Admin user if not present
 async function seedAdminUser() {
     try {
-        const adminEmail = "admin@rescuemeals.com";
+        const adminEmail = process.env.ADMIN_EMAIL || "ankushyadav7232@gmail.com";
         const existingAdmin = await User.findOne({ email: adminEmail });
         if (!existingAdmin) {
-            const hashedPassword = await bcrypt.hash("MySecret123", 10);
+            const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || "admin123", 10);
             const newAdmin = new User({
                 name: "Site Admin",
                 email: adminEmail,
@@ -84,17 +85,27 @@ async function seedAdminUser() {
     }
 }
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI)
-    .then(async () => {
-        console.log("✅ MongoDB Connected");
+// MongoDB Connection with Serverless Caching
+let cachedDb = null;
+async function connectDB() {
+    if (cachedDb && mongoose.connection.readyState === 1) {
+        return cachedDb;
+    }
+    try {
+        cachedDb = await mongoose.connect(process.env.MONGODB_URI);
+        console.log("? MongoDB Connected");
         await seedAdminUser();
-    })
-    .catch(err => console.error(err));
+        return cachedDb;
+    } catch (err) {
+        console.error("MongoDB connection error:", err.message);
+    }
+}
+connectDB();
 
 // Middleware to make data available to all views
 app.use(async (req, res, next) => {
     try {
+        await connectDB();
         // Fetch website settings
         let settings = await WebsiteSettings.findOne();
         if (!settings) {
